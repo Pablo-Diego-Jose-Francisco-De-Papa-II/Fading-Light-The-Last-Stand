@@ -10,23 +10,66 @@ public class Menu {
         frame.setResizable(false);
         frame.setLayout(null);
 
-        Image image = new  ImageIcon("C:/Users/UX3405/Pictures/Saved Pictures/idwin.png").getImage();
-        frame.setIconImage(image);
+        // Icon image
+        Image iconImage = new  ImageIcon("resources/FadingLight-icon.png").getImage();
+        frame.setIconImage(iconImage);
 
-        // new game, load, bio, quit
+        // Layered pane
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(860, 540));
+
+        // Background image
+        ImageIcon backgroundImage = new ImageIcon("resources/FL_Background_img.png");
+        Image background = backgroundImage.getImage().getScaledInstance(860, 540, Image.SCALE_SMOOTH);
+        backgroundImage = new ImageIcon(background);
+        JLabel backgroundLabel = new JLabel(backgroundImage);
+        backgroundLabel.setBounds(0, 0, 860, 540);
+        layeredPane.add(backgroundLabel, JLayeredPane.DEFAULT_LAYER);
+
+        // Title name
+        JLabel titleLabel = new JLabel("Fading Light");
+        titleLabel.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 40));
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setBounds(85, 75, 500, 50);
+        layeredPane.add(titleLabel, JLayeredPane.PALETTE_LAYER);
+
+        JLabel titleLabel2 = new JLabel("The Last Stand");
+        titleLabel2.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 30));
+        titleLabel2.setForeground(Color.WHITE);
+        titleLabel2.setBounds(225, 125, 500, 30);
+        layeredPane.add(titleLabel2, JLayeredPane.PALETTE_LAYER);
+
+        // new game, load, bio, quit buttons
         JButton newGameButton = createButton("New game", 75);
-        frame.add(newGameButton);
+        layeredPane.add(newGameButton, JLayeredPane.MODAL_LAYER);
 
         JButton loadGameButton = createButton("Load game", 175);
-        frame.add(loadGameButton);
+        layeredPane.add(loadGameButton, JLayeredPane.MODAL_LAYER);
 
         JButton survivalGuideButton = createButton("Survival guide", 275);
-        frame.add(survivalGuideButton);
+        layeredPane.add(survivalGuideButton, JLayeredPane.MODAL_LAYER);
 
         JButton quitButton = createButton("Quit to desktop", 375);
-        frame.add(quitButton);
+        layeredPane.add(quitButton, JLayeredPane.MODAL_LAYER);
 
+        frame.setContentPane(layeredPane);
+        frame.pack();
         frame.setVisible(true);
+
+        newGameButton.addActionListener(e -> {
+            frame.dispose();
+            new Game();
+        });
+
+        loadGameButton.addActionListener(e -> {
+           // todo
+        });
+
+        survivalGuideButton.addActionListener(e -> {
+            // todo
+        });
+
+        quitButton.addActionListener(e -> System.exit(0));
     }
 
     private static JButton createButton(String text, int y) {
@@ -37,9 +80,5 @@ public class Menu {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setBounds(650, y, 134, 50);
         return button;
-    }
-
-    public static void main(String[] args) {
-        new Menu().setUpGUI();
     }
 }
