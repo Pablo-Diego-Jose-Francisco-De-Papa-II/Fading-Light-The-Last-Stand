@@ -4,34 +4,36 @@ import javax.swing.*;
 
 public abstract class AbstractHUD extends JPanel {
 
-    private final JLabel dayLabel;
-    private final JLabel scrapLabel;
-    private final JLabel enemiesLeftLabel;
+    protected final JLabel dayLabel;
+    protected final JLabel scrapLabel;
+    protected final JLabel enemiesLeftLabel;
 
-    AbstractHUD() {
+    public AbstractHUD() {
+        setLayout(null);
+        setBounds(0, 0, 1280, 720);
+
         this.dayLabel = new JLabel("Day: 1");
-        dayLabel.setBounds(0, 0, 100, 50);
+        this.dayLabel.setBounds(10, 0, 150, 30);
         add(this.dayLabel);
 
         this.scrapLabel = new JLabel("Scrap: 0");
-        scrapLabel.setBounds(0, 0, 100, 50);
+        this.scrapLabel.setBounds(1200, 0, 150, 30);
         add(this.scrapLabel);
 
         this.enemiesLeftLabel = new JLabel("Enemies Left: 0");
-        enemiesLeftLabel.setBounds(0, 0, 100, 50);
+        this.enemiesLeftLabel.setBounds(10, 20, 200, 30);
         add(this.enemiesLeftLabel);
     }
 
-    void updateDay(int day) {
+    public void updateDay(int day) {
         this.dayLabel.setText("Day: " + day);
     }
 
-    void updateScrap(int scrap) {
+    public void updateScrap(int scrap) {
         this.scrapLabel.setText("Scrap: " + scrap);
     }
 
-    void updateEnemiesLeft(int enemiesLeft) {
+    public void updateEnemiesLeft(int enemiesLeft) {
         this.enemiesLeftLabel.setText("Enemies Left: " + enemiesLeft);
     }
-
 }

@@ -1,27 +1,32 @@
 package ui;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class BuildHUD extends AbstractHUD {
 
-    private JButton shopButton;
-    private JButton startWaveButton;
+    private final JButton startWaveButton;
+    private final JButton openShopButton;
 
     public BuildHUD() {
         super();
 
-        this.shopButton = new JButton("Shop");
         this.startWaveButton = new JButton("Start Wave");
-
-        add(this.shopButton);
+        this.startWaveButton.setBounds(10, 600, 200, 75);
+        this.startWaveButton.setFont(new Font("Arial", Font.BOLD, 30));
         add(this.startWaveButton);
-    }
 
-    public JButton getShopButton() {
-        return this.shopButton;
+        this.openShopButton = new JButton("Shop");
+        this.openShopButton.setBounds(1055, 600, 200, 75);
+        this.openShopButton.setFont(new Font("Arial", Font.BOLD, 30));
+        add(this.openShopButton);
     }
 
     public JButton getStartWaveButton() {
         return this.startWaveButton;
+    }
+
+    public JButton getOpenShopButton() {
+        return this.openShopButton;
     }
 }
