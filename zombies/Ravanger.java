@@ -1,6 +1,12 @@
 package zombies;
 
+import game.PlayingArea;
+
 public class Ravanger extends Zombie {
+    public Ravanger(PlayingArea map, int startX, int startY) {
+        super(map, startX, startY);
+    }
+
     @Override
     public void move() {
 
