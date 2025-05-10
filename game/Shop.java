@@ -1,81 +1,149 @@
 package game;
 
-import buildings.*;
-import zombies.Zombie;
+import buildings.Building;
+import buildings.WatchTower;
+import buildings.Ballista;
+import buildings.Mortar;
+import buildings.SniperTower;
+import buildings.Flamethrower;
+import buildings.HellstormTurret;
+import buildings.RocketSilo;
 
-import java.util.List;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public abstract class Building {
-    protected int health;
-    protected int damage;
-    protected int range;
-    protected int level;
-    protected int cost;
-    protected int x;
-    protected int y;
-    protected boolean destroyed;
+public class Shop extends JFrame {
+    private int playerMoney;
+    private PlayingArea map;
 
-    protected PlayingArea map;
+    private JButton watchTowerButton;
+    private JButton ballistaButton;
+    private JButton mortarButton;
+    private JButton sniperTowerButton;
+    private JButton flamethrowerButton;
+    private JButton hellstormTurretButton;
+    private JButton rocketSiloButton;
+    private JLabel moneyLabel;
 
-    public Building(PlayingArea map, int x, int y) {
+    public Shop(int initialMoney, PlayingArea map) {
+        this.playerMoney = initialMoney;
         this.map = map;
-        this.x = x;
-        this.y = y;
-        this.level = 1;
-        this.destroyed = false;
+
+        setTitle("Shop");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new FlowLayout());
+
+        // Money label to display available money
+        moneyLabel = new JLabel("Money: " + playerMoney);
+        add(moneyLabel);
+
+        // Buttons for each building
+        watchTowerButton = new JButton("Buy Watch Tower - 100");
+        ballistaButton = new JButton("Buy Ballista - 150");
+        mortarButton = new JButton("Buy Mortar - 200");
+        sniperTowerButton = new JButton("Buy Sniper Tower - 250");
+        flamethrowerButton = new JButton("Buy Flamethrower - 300");
+        hellstormTurretButton = new JButton("Buy Hellstorm Turret - 400");
+        rocketSiloButton = new JButton("Buy Rocket Silo - 500");
+
+        // Add buttons to the frame
+        add(watchTowerButton);
+        add(ballistaButton);
+        add(mortarButton);
+        add(sniperTowerButton);
+        add(flamethrowerButton);
+        add(hellstormTurretButton);
+        add(rocketSiloButton);
+
+        // Action listeners for each button
+        watchTowerButton.addActionListener(new BuildingButtonListener("Watch Tower"));
+        ballistaButton.addActionListener(new BuildingButtonListener("Ballista"));
+        mortarButton.addActionListener(new BuildingButtonListener("Mortar"));
+        sniperTowerButton.addActionListener(new BuildingButtonListener("Sniper Tower"));
+        flamethrowerButton.addActionListener(new BuildingButtonListener("Flamethrower"));
+        hellstormTurretButton.addActionListener(new BuildingButtonListener("Hellstorm Turret"));
+        rocketSiloButton.addActionListener(new BuildingButtonListener("Rocket Silo"));
     }
 
-    public abstract void attack(List<Zombie> zombies);
+    private class BuildingButtonListener implements ActionListener {
+        private final String buildingType;
 
-    public void takeDamage(int amount) {
-        this.health -= amount;
-        if (this.health <= 0) {
-            this.destroyed = true;
-            map.getTile(x, y).removeBuilding();
+        public BuildingButtonListener(String buildingType) {
+            this.buildingType = buildingType;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            purchaseBuilding(buildingType);
         }
     }
 
-    public boolean isDestroyed() {
-        return destroyed;
+    private void purchaseBuilding(String buildingType) {
+        int buildingCost = getBuildingCost(buildingType);
+
+        if (buildingCost == -1) {
+            JOptionPane.showMessageDialog(this, "Invalid building type.");
+            return;
+        }
+
+        if (playerMoney >= buildingCost) {
+            Building building = Building.createBuilding(buildingType, map, 5, 5);
+            if (building != null) {
+                playerMoney -= buildingCost;
+                JOptionPane.showMessageDialog(this, "Purchased " + buildingType);
+                updateMoneyLabel();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to create the building.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Not enough money.");
+        }
     }
 
-    public void upgrade() {
-        level++;
-        this.health += 50;
-        this.damage += 10;
-        this.range += 1;
+    private int getBuildingCost(String buildingType) {
+        switch (buildingType) {
+            case "Watch Tower":
+                return 100;
+            case "Ballista":
+                return 150;
+            case "Mortar":
+                return 200;
+            case "Sniper Tower":
+                return 250;
+            case "Flamethrower":
+                return 300;
+            case "Hellstorm Turret":
+                return 400;
+            case "Rocket Silo":
+                return 500;
+            default:
+                return -1; // Invalid building
+        }
     }
 
-    public int getCost() {
-        return cost;
+    private void updateMoneyLabel() {
+        moneyLabel.setText("Money: " + playerMoney);
     }
 
-    public int getX() {
-        return x;
+    public int getPlayerMoney() {
+        return playerMoney;
     }
 
-    public int getY() {
-        return y;
+    public void addMoney(int amount) {
+        playerMoney += amount;
+        updateMoneyLabel();
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public static Building createBuilding(String type, PlayingArea map, int x, int y) {
-        return switch (type) {
-            case "Watch Tower" -> new WatchTower(map, x, y);
-            case "Ballista" -> new Ballista(map, x, y);
-            case "Mortar" -> new Mortar(map, x, y);
-            case "Sniper Tower" -> new SniperTower(map, x, y);
-            case "Flamethrower" -> new Flamethrower(map, x, y);
-            case "Hellstorm Turret" -> new HellstormTurret(map, x, y);
-            case "Rocket Silo" -> new RocketSilo(map, x, y);
-            default -> null;
-        };
+    public void subtractMoney(int amount) {
+        if (playerMoney >= amount) {
+            playerMoney -= amount;
+            updateMoneyLabel();
+        } else {
+            JOptionPane.showMessageDialog(this, "Not enough money.");
+        }
     }
 }

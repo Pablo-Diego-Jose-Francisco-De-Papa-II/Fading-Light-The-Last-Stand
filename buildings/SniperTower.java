@@ -7,7 +7,7 @@ import java.util.List;
 
 public class SniperTower extends Building {
     public SniperTower(PlayingArea map, int x, int y) {
-        super(map, x, y);
+        super(map, x, y, 3);
         this.health = 80;
         this.damage = 50;
         this.range = 7;

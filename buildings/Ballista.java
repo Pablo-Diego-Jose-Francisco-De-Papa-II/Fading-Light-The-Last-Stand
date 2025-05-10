@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Ballista extends Building {
     public Ballista(PlayingArea map, int x, int y) {
-        super(map, x, y);
+        super(map, x, y, 4);
         this.health = 150;
         this.damage = 30;
         this.range = 4;

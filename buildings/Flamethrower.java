@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Flamethrower extends Building {
     public Flamethrower(PlayingArea map, int x, int y) {
-        super(map, x, y);
+        super(map, x, y, 3);
         this.health = 130;
         this.damage = 8;
         this.range = 2;

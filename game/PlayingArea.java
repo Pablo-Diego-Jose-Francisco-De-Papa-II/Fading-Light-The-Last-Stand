@@ -8,7 +8,6 @@ public class PlayingArea {
     private Tile[][] originalVillage;
     private Tile[][] currentWaveMap;
 
-
     public PlayingArea() {
         for (int y = 0; y < 128; y++) {
             for (int x = 0; x < 72; x++) {

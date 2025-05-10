@@ -30,12 +30,14 @@ public abstract class Zombie {
         this.icon = icon;
     }
 
+    // Move the zombie
     public void move() {
         if (this.x > 0 && this.map.getTile(this.x - 1, this.y).isWalkable()) {
             this.x--;
         }
     }
 
+    // Deal damage to a building if present
     public void dealDamage() {
         Tile tile = this.map.getTile(this.x, this.y);
         if (tile.getBuilding() != null) {
@@ -43,10 +45,21 @@ public abstract class Zombie {
         }
     }
 
+    // Handle the zombie's death
     public void die() {
         System.out.println("Zombie at " + x + "," + y + " died.");
+        // You can add additional cleanup logic here, like removing the zombie from the map or a list
     }
 
+    // Method for zombies to take damage
+    public void takeDamage(int amount) {
+        this.health -= amount;
+        if (this.health <= 0) {
+            die();  // If health reaches 0, zombie dies
+        }
+    }
+
+    // Getters
     public int getX() {
         return this.x;
     }

@@ -15,13 +15,15 @@ public abstract class Building {
     protected int x;
     protected int y;
     protected boolean destroyed;
+    protected int size; // Add size property
 
     protected PlayingArea map;
 
-    public Building(PlayingArea map, int x, int y) {
+    public Building(PlayingArea map, int x, int y, int size) {
         this.map = map;
         this.x = x;
         this.y = y;
+        this.size = size; // Initialize size
         this.level = 1;
         this.destroyed = false;
     }
@@ -65,5 +67,23 @@ public abstract class Building {
 
     public int getHealth() {
         return health;
+    }
+
+    // Getter for size
+    public int getSize() {
+        return size;
+    }
+
+    public static Building createBuilding(String type, PlayingArea map, int x, int y) {
+        return switch (type) {
+            case "Watch Tower" -> new WatchTower(map, x, y);
+            case "Ballista" -> new Ballista(map, x, y);
+            case "Mortar" -> new Mortar(map, x, y);
+            case "Sniper Tower" -> new SniperTower(map, x, y);
+            case "Flamethrower" -> new Flamethrower(map, x, y);
+            case "Hellstorm Turret" -> new HellstormTurret(map, x, y);
+            case "Rocket Silo" -> new RocketSilo(map, x, y);
+            default -> null;
+        };
     }
 }

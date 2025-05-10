@@ -90,9 +90,4 @@ public class Tile {
         }
     }
 
-    public void removeBuilding() {
-        this.building = null;
-        this.isWalkable = true;
-    }
-
 }
