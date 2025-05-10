@@ -1,7 +1,6 @@
-package buildings;
+package game;
 
-import game.PlayingArea;
-import game.Tile;
+import buildings.*;
 import zombies.Zombie;
 
 import java.util.List;
@@ -65,5 +64,18 @@ public abstract class Building {
 
     public int getHealth() {
         return health;
+    }
+
+    public static Building createBuilding(String type, PlayingArea map, int x, int y) {
+        return switch (type) {
+            case "Watch Tower" -> new WatchTower(map, x, y);
+            case "Ballista" -> new Ballista(map, x, y);
+            case "Mortar" -> new Mortar(map, x, y);
+            case "Sniper Tower" -> new SniperTower(map, x, y);
+            case "Flamethrower" -> new Flamethrower(map, x, y);
+            case "Hellstorm Turret" -> new HellstormTurret(map, x, y);
+            case "Rocket Silo" -> new RocketSilo(map, x, y);
+            default -> null;
+        };
     }
 }

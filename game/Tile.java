@@ -27,6 +27,15 @@ public class Tile {
         this.image = getRandomSubImage();
     }
 
+    public Tile(Tile other) {
+        this.x = other.x;
+        this.y = other.y;
+        this.isWalkable = other.isWalkable;
+        this.image = other.image;
+        this.building = other.building;
+    }
+
+
     private static BufferedImage loadImage() {
         try {
             return ImageIO.read(new File("resources/floor.png"));
@@ -71,4 +80,19 @@ public class Tile {
     public BufferedImage getImage() {
         return this.image;
     }
+
+    public void damageBuilding(int amount) {
+        if (building != null) {
+            building.takeDamage(amount);
+            if (building.getHealth() <= 0) {
+                removeBuilding();
+            }
+        }
+    }
+
+    public void removeBuilding() {
+        this.building = null;
+        this.isWalkable = true;
+    }
+
 }
