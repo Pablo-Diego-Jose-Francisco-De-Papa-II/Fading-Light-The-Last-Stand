@@ -3,6 +3,10 @@ package zombies;
 import game.PlayingArea;
 import game.Tile;
 
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
+
 public abstract class Zombie {
 
     private int health;
@@ -30,11 +34,19 @@ public abstract class Zombie {
         this.icon = icon;
     }
 
-    // Move the zombie
+    // Move the zombie (you can modify this logic as needed)
     public void move() {
         if (this.x > 0 && this.map.getTile(this.x - 1, this.y).isWalkable()) {
             this.x--;
         }
+    }
+
+    // Update the zombie's state (called every frame)
+    public void update() {
+        // Move the zombie
+        move();
+        // Perform damage if needed
+        dealDamage();
     }
 
     // Deal damage to a building if present
@@ -57,6 +69,13 @@ public abstract class Zombie {
         if (this.health <= 0) {
             die();  // If health reaches 0, zombie dies
         }
+    }
+
+    // Draw the zombie on the screen
+    public void draw(Graphics g) {
+        // Here we are just using an icon (you can replace this with your own logic)
+        Image image = Toolkit.getDefaultToolkit().getImage(this.icon); // Load the image based on the icon
+        g.drawImage(image, x, y, size, size, null);  // Draw the zombie as an image
     }
 
     // Getters
