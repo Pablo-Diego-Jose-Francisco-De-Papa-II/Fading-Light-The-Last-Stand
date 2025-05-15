@@ -70,4 +70,8 @@ public class PlayingArea {
         return copy;
     }
 
+    public boolean isWithinBounds(int tileX, int tileY) {
+        return tileX >= 0 && tileY >= 0 && tileX < 128 && tileY < 72;
+    }
+
 }

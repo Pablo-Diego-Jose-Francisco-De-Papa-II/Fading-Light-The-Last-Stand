@@ -91,8 +91,4 @@ public class GameGUI extends JFrame {
         gamePanel.repaint();
     }
 
-    public static void main(String[] args) {
-        GameGUI gui = new GameGUI();
-        gui.setVisible(true);
-    }
 }

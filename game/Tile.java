@@ -90,4 +90,8 @@ public class Tile {
         }
     }
 
+    public boolean hasBuilding() {
+        return this.building != null;
+    }
+
 }
