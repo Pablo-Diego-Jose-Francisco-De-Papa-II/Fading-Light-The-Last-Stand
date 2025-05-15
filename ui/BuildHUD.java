@@ -1,27 +1,49 @@
 package ui;
 
+import game.PlayingArea;
+import game.Shop;
+
 import javax.swing.*;
 
 public class BuildHUD extends AbstractHUD {
 
-    private JButton shopButton;
-    private JButton startWaveButton;
+    private final JButton shopButton;
+    private final JButton startWaveButton;
+    private final Shop shop;
 
-    public BuildHUD() {
+    public BuildHUD(PlayingArea playingArea) {
         super();
 
+        // Shop button
         this.shopButton = new JButton("Shop");
-        this.startWaveButton = new JButton("Start Wave");
-
+        this.shopButton.setBounds(10, 660, 150, 50);
         add(this.shopButton);
+
+        // Start Wave button
+        this.startWaveButton = new JButton("Start Wave");
+        this.startWaveButton.setBounds(1120, 660, 150, 50);
         add(this.startWaveButton);
+
+        // Shop panel (hidden initially)
+        this.shop = new Shop(playingArea, 0);
+        this.shop.setVisible(false);
+        this.shop.setBounds(130, 40, 400, 200);
+        add(this.shop);
+
+        // Button action: toggle shop visibility
+        shopButton.addActionListener(e -> shop.setVisible(!shop.isVisible()));
     }
 
+    // Getters
     public JButton getShopButton() {
         return this.shopButton;
     }
 
     public JButton getStartWaveButton() {
         return this.startWaveButton;
+    }
+
+    public Shop getShop() {
+        return this.shop;
     }
 }

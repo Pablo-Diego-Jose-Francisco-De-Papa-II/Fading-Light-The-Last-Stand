@@ -34,11 +34,17 @@ public class WaveHUD extends AbstractHUD {
         this.giveUpButton.setFont(new Font("Arial", Font.BOLD, 30));
         add(this.giveUpButton);
 
+        // Tu vytvoríme nový timeLabel (môžeš upraviť pozíciu a veľkosť)
         this.timeLabel = new JLabel("00:00");
         this.timeLabel.setBounds(575, 0, 100, 75);
         this.timeLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        this.timeLabel.setForeground(Color.WHITE);
         add(this.timeLabel);
+    }
 
+    // Metóda na aktualizáciu času
+    public void updateTime(String time) {
+        this.timeLabel.setText(time);
     }
 
     public JButton getPauseButton() {

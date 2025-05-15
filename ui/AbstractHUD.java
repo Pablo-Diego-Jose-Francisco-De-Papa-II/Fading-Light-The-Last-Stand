@@ -1,39 +1,36 @@
 package ui;
 
 import javax.swing.*;
+import java.awt.*;
 
 public abstract class AbstractHUD extends JPanel {
 
     protected final JLabel dayLabel;
     protected final JLabel scrapLabel;
-    protected final JLabel enemiesLeftLabel;
 
     public AbstractHUD() {
         setLayout(null);
         setBounds(0, 0, 1280, 720);
 
-        this.dayLabel = new JLabel("Day: 1");
-        this.dayLabel.setBounds(10, 0, 150, 30);
+        ImageIcon dayIcon = new ImageIcon("resources/calendar.png");
+        ImageIcon scrapIcon = new ImageIcon("resources/scrap_bg.png");
+
+        this.dayLabel = new JLabel("27", dayIcon, JLabel.LEFT);
+        this.dayLabel.setBounds(1175, 65, 75, 75);
+        this.dayLabel.setForeground(Color.WHITE);
         add(this.dayLabel);
 
-        this.scrapLabel = new JLabel("Scrap: 0");
-        this.scrapLabel.setBounds(1200, 0, 150, 30);
+        this.scrapLabel = new JLabel("420", scrapIcon, JLabel.LEFT);
+        this.scrapLabel.setBounds(1020, 5, 250, 50);
+        this.scrapLabel.setForeground(Color.WHITE);
         add(this.scrapLabel);
-
-        this.enemiesLeftLabel = new JLabel("Enemies Left: 0");
-        this.enemiesLeftLabel.setBounds(10, 20, 200, 30);
-        add(this.enemiesLeftLabel);
     }
 
     public void updateDay(int day) {
-        this.dayLabel.setText("Day: " + day);
+        this.dayLabel.setText(String.valueOf(day));
     }
 
     public void updateScrap(int scrap) {
-        this.scrapLabel.setText("Scrap: " + scrap);
-    }
-
-    public void updateEnemiesLeft(int enemiesLeft) {
-        this.enemiesLeftLabel.setText("Enemies Left: " + enemiesLeft);
+        this.scrapLabel.setText(String.valueOf(scrap));
     }
 }
