@@ -17,7 +17,7 @@ public class Main {
         // Add action listener to the Shop button
         buildHUD.getShopButton().addActionListener(e -> {
             // Open shop with some initial money and reference to the playing area
-            Shop shop = new Shop(new PlayingArea(), 500); // Example: 500 starting money
+            Shop shop = new Shop(new PlayingArea(), 1000); // Example: 500 starting money
             shop.setVisible(true);
         });
 

@@ -27,7 +27,7 @@ public class Game {
 
         this.playingArea = new PlayingArea();
         this.buildHUD = new BuildHUD(this.playingArea);
-        this.waveHUD = new WaveHUD();
+        this.waveHUD = new WaveHUD(this);
 
         // Initialize layered pane and set its layout to null for absolute positioning
         layeredPane = new JLayeredPane();

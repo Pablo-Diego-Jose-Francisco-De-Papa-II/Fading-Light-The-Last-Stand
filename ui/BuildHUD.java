@@ -4,6 +4,7 @@ import game.PlayingArea;
 import game.Shop;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class BuildHUD extends AbstractHUD {
 
@@ -15,17 +16,19 @@ public class BuildHUD extends AbstractHUD {
         super();
 
         // Shop button
-        this.shopButton = new JButton("Shop");
+        this.shopButton = new JButton("SHOP");
         this.shopButton.setBounds(10, 660, 150, 50);
+        this.shopButton.setFont(new Font("Arial", Font.BOLD, 27));
         add(this.shopButton);
 
         // Start Wave button
-        this.startWaveButton = new JButton("Start Wave");
+        this.startWaveButton = new JButton("DEFEND");
         this.startWaveButton.setBounds(1120, 660, 150, 50);
+        this.startWaveButton.setFont(new Font("Arial", Font.BOLD, 27));
         add(this.startWaveButton);
 
         // Shop panel (hidden initially)
-        this.shop = new Shop(playingArea, 0);
+        this.shop = new Shop(playingArea, 500);
         this.shop.setVisible(false);
         this.shop.setBounds(130, 40, 400, 200);
         add(this.shop);
