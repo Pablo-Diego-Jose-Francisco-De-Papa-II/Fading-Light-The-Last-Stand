@@ -17,9 +17,9 @@ public abstract class Slime {
     private int attackSpeed;
     private String icon;
 
-    private PlayingArea map;
-    private int x;
-    private int y;
+    protected PlayingArea map;
+    protected int x;
+    protected int y;
 
     public Slime(PlayingArea map, int startX, int startY, int health, int size, int speed, int attackDamage, int attackRange, int attackSpeed, String icon) {
         this.map = map;
@@ -34,64 +34,52 @@ public abstract class Slime {
         this.icon = icon;
     }
 
-    // Move the zombie (you can modify this logic as needed)
     public void move() {
-        if (this.x > 0 && this.map.getTile(this.x - 1, this.y).isWalkable()) {
-            this.x--;
+        // Pokús sa ísť doľava, ale najskôr over súradnice a walkability
+        int nextX = this.x - 1;
+        int nextY = this.y;
+
+        if (nextX >= 0) { // overenie, či súradnica nie je záporná
+            Tile nextTile = this.map.getTile(nextX, nextY);
+            if (nextTile != null && nextTile.isWalkable()) {
+                this.x = nextX;
+            }
+            // else: nemožno sa pohybovať, zostávaj na mieste
         }
     }
 
-    // Update the zombie's state (called every frame)
     public void update() {
-        // Move the zombie
         move();
-        // Perform damage if needed
         dealDamage();
     }
 
-    // Deal damage to a building if present
     public void dealDamage() {
         Tile tile = this.map.getTile(this.x, this.y);
-        if (tile.getBuilding() != null) {
+        if (tile != null && tile.getBuilding() != null) {
             tile.getBuilding().takeDamage(this.attackDamage);
         }
     }
 
-    // Handle the zombie's death
     public void die() {
-        System.out.println("Zombie at " + x + "," + y + " died.");
-        // You can add additional cleanup logic here, like removing the zombie from the map or a list
+        System.out.println("Slime at " + x + "," + y + " died.");
+        // Odstránenie slima z manažéra alebo mapy by malo byť riešené mimo tejto triedy
     }
 
-    // Method for zombies to take damage
     public void takeDamage(int amount) {
         this.health -= amount;
         if (this.health <= 0) {
-            die();  // If health reaches 0, zombie dies
+            die();
         }
     }
 
-    // Draw the zombie on the screen
     public void draw(Graphics g) {
-        // Here we are just using an icon (you can replace this with your own logic)
-        Image image = Toolkit.getDefaultToolkit().getImage(this.icon); // Load the image based on the icon
-        g.drawImage(image, x, y, size, size, null);  // Draw the zombie as an image
+        Image image = Toolkit.getDefaultToolkit().getImage(this.icon);
+        g.drawImage(image, x, y, size, size, null);
     }
 
-    // Getters
-    public int getX() {
-        return this.x;
-    }
-
-    public int getY() {
-        return this.y;
-    }
-
-    public int getHealth() {
-        return this.health;
-    }
-
-    public String getIcon() {
-        return this.icon;
-    }
+    public int getX() { return x; }
+    public int getY() { return y; }
+    public int getHealth() { return health; }
+    public String getIcon() { return icon; }
+    public boolean isDead() { return health <= 0; }
 }

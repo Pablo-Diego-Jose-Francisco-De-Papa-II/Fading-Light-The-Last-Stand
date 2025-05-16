@@ -1,7 +1,8 @@
 import buildings.WatchTower;
 import game.Game;
 import game.PlayingArea;
-import game.Shop;
+import game.BuildingManager;
+import slimes.Biter;
 import ui.BuildHUD;
 
 import javax.swing.*;
@@ -9,13 +10,11 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            // Vytvorenie hry
             Game game = new Game();
 
-            // Získanie hernej mapy
             PlayingArea map = game.getPlayingArea();
 
-            // Vytvorenie a umiestnenie WatchTower na pozíciu (50, 50)
+            // Create and place WatchTower
             WatchTower tower = new WatchTower(map, 50, 50);
             boolean placed = map.placeBuilding(tower);
             if (placed) {
@@ -24,15 +23,33 @@ public class Main {
                 System.out.println("Failed to place WatchTower at (50, 50)");
             }
 
-            // Obnovíme zobrazenie - repaint game panel, aby sa zobrazil nový objekt
+            BuildingManager manager = game.getBuildingManager();
+
+            // Create Biters (assuming Biter extends Slime and constructor exists)
+            Biter biter1 = new Biter(map, 40, 50);
+            Biter biter2 = new Biter(map, 60, 55);
+            Biter biter3 = new Biter(map, 100, 100);
+
+            manager.addSlime(biter1);
+            manager.addSlime(biter2);
+            manager.addSlime(biter3);
+
+            // Tower should already be in manager via placeBuilding(), but add just in case
+            manager.addBuilding(tower);
+
+            manager.update(); // Buildings attack slimes
+
+            System.out.println("Biter1 health: " + biter1.getHealth());
+            System.out.println("Biter2 health: " + biter2.getHealth());
+            System.out.println("Biter3 health: " + biter3.getHealth());
+
+            // Refresh UI
             game.getBuildHUD().repaint();
 
-            // Nastavenie akcií tlačidiel v HUD
             BuildHUD buildHUD = game.getBuildHUD();
 
             buildHUD.getShopButton().addActionListener(e -> {
-                Shop shop = new Shop(map, 1000);
-                shop.setVisible(true);
+                // Your shop code here
             });
 
             buildHUD.getStartWaveButton().addActionListener(e -> {

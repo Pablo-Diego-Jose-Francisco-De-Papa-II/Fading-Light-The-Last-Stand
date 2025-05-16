@@ -1,5 +1,6 @@
 package ui;
 
+import game.Game;
 import game.PlayingArea;
 import game.Shop;
 
@@ -12,7 +13,7 @@ public class BuildHUD extends AbstractHUD {
     private final JButton startWaveButton;
     private final Shop shop;
 
-    public BuildHUD(PlayingArea playingArea) {
+    public BuildHUD(PlayingArea playingArea, Game game) {
         super();
 
         // Shop button

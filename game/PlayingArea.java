@@ -3,45 +3,62 @@ package game;
 import buildings.Building;
 
 public class PlayingArea {
-    private Tile[][] playingArea = new Tile[72][128]; // 72 riadkov (y), 128 stĺpcov (x)
+    private static final int ROWS = 72;
+    private static final int COLS = 128;
 
+    private Tile[][] playingArea = new Tile[ROWS][COLS];
     private Tile[][] originalVillage;
     private Tile[][] currentWaveMap;
 
+    private BuildingManager buildingManager;
+
     public PlayingArea() {
-        for (int y = 0; y < 72; y++) {
-            for (int x = 0; x < 128; x++) {
-                this.playingArea[y][x] = new Tile(x, y);
+        buildingManager = new BuildingManager();
+        initializeTiles();
+    }
+
+    // Initialize all tiles with their coordinates
+    private void initializeTiles() {
+        for (int y = 0; y < ROWS; y++) {
+            for (int x = 0; x < COLS; x++) {
+                playingArea[y][x] = new Tile(x, y);
             }
         }
     }
 
+    // Get tile at position (x, y) or null if invalid
     public Tile getTile(int x, int y) {
         if (!isValidCoordinate(x, y)) return null;
-        return this.playingArea[y][x];
+        return playingArea[y][x];
     }
 
+    // Return all tiles array
     public Tile[][] getAllTiles() {
-        return this.playingArea;
+        return playingArea;
     }
 
+    // Attempt to place a building on the map; returns true if successful
     public boolean placeBuilding(Building building) {
         int x = building.getX();
         int y = building.getY();
         int size = building.getSize();
 
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (!isValidCoordinate(x + i, y + j) || !playingArea[y + j][x + i].isWalkable()) {
+        // Check if all tiles in the building area are walkable and valid
+        for (int dy = 0; dy < size; dy++) {
+            for (int dx = 0; dx < size; dx++) {
+                int tileX = x + dx;
+                int tileY = y + dy;
+                if (!isValidCoordinate(tileX, tileY) || !playingArea[tileY][tileX].isWalkable()) {
                     System.out.println("Cannot place building: space is occupied or invalid.");
                     return false;
                 }
             }
         }
 
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                playingArea[y + j][x + i].setBuilding(building);
+        // Place the building on all tiles in the area
+        for (int dy = 0; dy < size; dy++) {
+            for (int dx = 0; dx < size; dx++) {
+                playingArea[y + dy][x + dx].setBuilding(building);
             }
         }
 
@@ -49,18 +66,24 @@ public class PlayingArea {
         return true;
     }
 
+    // Check if coordinates are inside the map boundaries
     private boolean isValidCoordinate(int x, int y) {
-        return x >= 0 && y >= 0 && x < 128 && y < 72;
+        return x >= 0 && y >= 0 && x < COLS && y < ROWS;
     }
 
+    // Save the current playing area as the original village state
     public void saveVillage() {
         originalVillage = deepCopyTiles(playingArea);
     }
 
+    // Reset playing area to the original saved village state
     public void resetToVillage() {
-        playingArea = deepCopyTiles(originalVillage);
+        if (originalVillage != null) {
+            playingArea = deepCopyTiles(originalVillage);
+        }
     }
 
+    // Deep copy of tiles array
     private Tile[][] deepCopyTiles(Tile[][] source) {
         Tile[][] copy = new Tile[source.length][source[0].length];
         for (int y = 0; y < source.length; y++) {
@@ -72,6 +95,10 @@ public class PlayingArea {
     }
 
     public boolean isWithinBounds(int tileX, int tileY) {
-        return tileX >= 0 && tileY >= 0 && tileX < 128 && tileY < 72;
+        return isValidCoordinate(tileX, tileY);
+    }
+
+    public BuildingManager getBuildingManager() {
+        return buildingManager;
     }
 }

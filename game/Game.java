@@ -1,15 +1,20 @@
 package game;
 
+import buildings.Building;
 import ui.BuildHUD;
 import ui.WaveHUD;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class Game {
+
     private final BuildHUD buildHUD;
     private final WaveHUD waveHUD;
     private final PlayingArea playingArea;
     private final GamePanel gamePanel;
+    private final BuildingManager buildingManager;
+
     private JFrame frame;
     private JLayeredPane layeredPane;
 
@@ -24,20 +29,18 @@ public class Game {
         frame.setIconImage(iconImage);
 
         this.playingArea = new PlayingArea();
-        this.buildHUD = new BuildHUD(this.playingArea);
+        this.buildingManager = playingArea.getBuildingManager();
+        this.buildHUD = new BuildHUD(this.playingArea, this);
         this.waveHUD = new WaveHUD(this);
         this.gamePanel = new GamePanel(this.playingArea, this);
 
-        // Initialize layered pane
         layeredPane = new JLayeredPane();
         layeredPane.setPreferredSize(new Dimension(1280, 720));
         layeredPane.setLayout(null);
 
-        // Setup GamePanel
         gamePanel.setBounds(0, 0, 1280, 720);
         layeredPane.add(gamePanel, Integer.valueOf(0));
 
-        // Setup HUDs
         buildHUD.setOpaque(false);
         waveHUD.setOpaque(false);
         buildHUD.setBounds(0, 0, 1280, 720);
@@ -45,13 +48,16 @@ public class Game {
         layeredPane.add(buildHUD, Integer.valueOf(100));
         layeredPane.add(waveHUD, Integer.valueOf(100));
 
-        // Add layered pane to frame
         frame.setContentPane(layeredPane);
         frame.pack();
         frame.setVisible(true);
 
-        // Default HUD mode
         switchHUD("build");
+        startGameLoop();
+    }
+
+    public void addBuildingToManager(Building building) {
+        buildingManager.addBuilding(building);
     }
 
     public void switchHUD(String mode) {
@@ -60,22 +66,30 @@ public class Game {
         layeredPane.repaint();
     }
 
-    public void addScrap(int amount) {
-        int current = buildHUD.getShop().getMoney();
-        buildHUD.getShop().addMoney(amount);
-        buildHUD.updateScrap(current + amount);
-    }
-
-    public BuildHUD getBuildHUD() {
-        return this.buildHUD;
-    }
-
-    public WaveHUD getWaveHUD() {
-        return this.waveHUD;
-    }
-
     public PlayingArea getPlayingArea() {
         return playingArea;
     }
 
+    public BuildingManager getBuildingManager() {
+        return buildingManager;
+    }
+
+    private void startGameLoop() {
+        Timer timer = new Timer(16, e -> updateGame());
+        timer.start();
+    }
+
+    private void updateGame() {
+        buildingManager.update();
+        buildingManager.cleanup();
+        gamePanel.repaint();
+    }
+
+    public BuildHUD getBuildHUD() {
+        return buildHUD;
+    }
+
+    public WaveHUD getWaveHUD() {
+        return waveHUD;
+    }
 }

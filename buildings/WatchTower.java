@@ -23,15 +23,14 @@ public class WatchTower extends Building {
     }
 
     public WatchTower(PlayingArea map, int x, int y) {
-        super("Watch Tower", map, x, y, 3,           // name, map, x, y, size
-                100,                                 // build cost
-                3,                                   // max level
-                100,                                 // max health
-                50,                                  // damage
-                5,                                   // range
-                1.0f,                                // attack speed
-                watchTowerImage                      // sprite
-        );
+        super("Watch Tower", map, x, y, 50, // size 50x50 for example
+                100,                         // build cost
+                3,                           // max level
+                100,                         // max health
+                50,                          // damage
+                100,                         // range (pixels)
+                1.0f,                        // attack speed
+                watchTowerImage);
     }
 
     @Override
@@ -42,7 +41,7 @@ public class WatchTower extends Building {
         for (Slime slime : slimes) {
             if (isInRange(slime)) {
                 slime.takeDamage(this.damage);
-                break;
+                break; // attack one slime per attack cycle
             }
         }
     }
