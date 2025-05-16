@@ -2,16 +2,14 @@ package game;
 
 import ui.BuildHUD;
 import ui.WaveHUD;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class Game {
-
     private final BuildHUD buildHUD;
     private final WaveHUD waveHUD;
     private final PlayingArea playingArea;
-    private final JPanel mapPanel;
+    private final GamePanel gamePanel;
     private JFrame frame;
     private JLayeredPane layeredPane;
 
@@ -28,66 +26,37 @@ public class Game {
         this.playingArea = new PlayingArea();
         this.buildHUD = new BuildHUD(this.playingArea);
         this.waveHUD = new WaveHUD(this);
+        this.gamePanel = new GamePanel(this.playingArea);
 
-        // Initialize layered pane and set its layout to null for absolute positioning
+        // Initialize layered pane
         layeredPane = new JLayeredPane();
         layeredPane.setPreferredSize(new Dimension(1280, 720));
         layeredPane.setLayout(null);
 
-        // Create the mapPanel (tile map drawing)
-        mapPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
+        // Setup GamePanel
+        gamePanel.setBounds(0, 0, 1280, 720);
+        layeredPane.add(gamePanel, Integer.valueOf(0));
 
-                for (int y = 0; y < 72; y++) {
-                    for (int x = 0; x < 128; x++) {
-                        Tile tile = playingArea.getTile(x, y);
-                        g.drawImage(tile.getImage(), x * 10, y * 10, null);
-                    }
-                }
-            }
-        };
-
-        // Set bounds for mapPanel and add at bottom layer (0)
-        mapPanel.setBounds(0, 0, 1280, 720);
-        layeredPane.add(mapPanel, Integer.valueOf(0));
-
-        // Prepare HUD panels
-        // Make sure HUDs are transparent if you want the map visible behind them
+        // Setup HUDs
         buildHUD.setOpaque(false);
         waveHUD.setOpaque(false);
-
-        // Set bounds of HUD panels (you can adjust height as needed)
         buildHUD.setBounds(0, 0, 1280, 720);
         waveHUD.setBounds(0, 0, 1280, 720);
-
-        // Add HUD panels on higher layer (e.g., 100)
         layeredPane.add(buildHUD, Integer.valueOf(100));
         layeredPane.add(waveHUD, Integer.valueOf(100));
 
-        // Add layered pane to frame's content pane
+        // Add layered pane to frame
         frame.setContentPane(layeredPane);
-
-        // Initially hide both HUDs (or set your default)
-        switchHUD("build");
-
         frame.pack();
         frame.setVisible(true);
+
+        // Default HUD mode
+        switchHUD("build");
     }
 
     public void switchHUD(String mode) {
-        if (mode.equals("build")) {
-            buildHUD.setVisible(true);
-            waveHUD.setVisible(false);
-        } else if (mode.equals("wave")) {
-            buildHUD.setVisible(false);
-            waveHUD.setVisible(true);
-        } else {
-            buildHUD.setVisible(false);
-            waveHUD.setVisible(false);
-        }
-        // Refresh to make sure visibility changes show up immediately
+        buildHUD.setVisible("build".equals(mode));
+        waveHUD.setVisible("wave".equals(mode));
         layeredPane.repaint();
     }
 
@@ -104,4 +73,9 @@ public class Game {
     public WaveHUD getWaveHUD() {
         return this.waveHUD;
     }
+
+    public PlayingArea getPlayingArea() {
+        return playingArea;
+    }
+
 }

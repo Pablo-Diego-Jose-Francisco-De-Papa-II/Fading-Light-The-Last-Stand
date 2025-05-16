@@ -3,11 +3,13 @@ package buildings;
 import game.PlayingArea;
 import zombies.Zombie;
 
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 public abstract class Building {
     protected String name;
-    protected int x, y;
+    protected int x;
+    protected int y;
     protected int size;
 
     protected int level;
@@ -28,9 +30,11 @@ public abstract class Building {
 
     protected PlayingArea map;
 
+    protected BufferedImage image;
+
     public Building(String name, PlayingArea map, int x, int y, int size,
-                    int cost, int maxLevel,
-                    int maxHealth, int damage, int range, float attackSpeed) {
+                    int cost, int maxLevel, int maxHealth,
+                    int damage, int range, float attackSpeed, BufferedImage image) {
         this.name = name;
         this.map = map;
         this.x = x;
@@ -52,6 +56,8 @@ public abstract class Building {
 
         this.lastAttackTime = 0;
         this.destroyed = false;
+
+        this.image = image;
     }
 
     public abstract void attack(List<Zombie> zombies);
@@ -149,6 +155,10 @@ public abstract class Building {
 
     public int getUpgradeCost() {
         return upgradeCost;
+    }
+
+    public BufferedImage getImage() {
+        return image;
     }
 
     public static Building createBuilding(String type, PlayingArea map, int x, int y) {
