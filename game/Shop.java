@@ -1,22 +1,24 @@
 package game;
 
-import buildings.Building;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Shop extends JPanel {
+
     private final PlayingArea map;
     private int scrap;
+    private String selectedBuilding = null;
+
+    private final Map<String, Integer> buildingCosts = new HashMap<>();
 
     public Shop(PlayingArea map, int initialMoney) {
         this.map = map;
         this.scrap = initialMoney;
 
         setLayout(new GridLayout(0, 1, 5, 5));
-        setBounds(500, 100, 250, 300);
-        setBackground(new Color(40, 40, 40, 220));
 
         addBuyButton("Watch Tower", 100);
         addBuyButton("Ballista", 150);
@@ -28,21 +30,23 @@ public class Shop extends JPanel {
     }
 
     private void addBuyButton(String name, int cost) {
-        JButton button = new JButton("Buy " + name + " - " + cost);
+        buildingCosts.put(name, cost); // store cost in map
+
+        JButton button = new JButton(name + " - " + cost);
+        button.setFont(new Font("Arial", Font.BOLD, 10));
         button.addActionListener((ActionEvent e) -> {
             if (scrap >= cost) {
-                Building building = Building.createBuilding(name, map, 5, 5);
-                if (building != null) {
-                    scrap -= cost;
-                    JOptionPane.showMessageDialog(this, "Purchased " + name);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Failed to build.");
-                }
+                selectedBuilding = name;
+                JOptionPane.showMessageDialog(this, "Click on the map to place your " + name);
             } else {
                 JOptionPane.showMessageDialog(this, "Not enough scrap.");
             }
         });
         add(button);
+    }
+
+    public int getCostForBuilding(String name) {
+        return buildingCosts.getOrDefault(name, Integer.MAX_VALUE); // fallback to a high number
     }
 
     public void setMoney(int money) {
@@ -61,5 +65,13 @@ public class Shop extends JPanel {
         if (scrap >= amount) {
             setMoney(scrap - amount);
         }
+    }
+
+    public String getSelectedBuilding() {
+        return selectedBuilding;
+    }
+
+    public void clearSelectedBuilding() {
+        selectedBuilding = null;
     }
 }

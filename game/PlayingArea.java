@@ -3,21 +3,22 @@ package game;
 import buildings.Building;
 
 public class PlayingArea {
-    private Tile[][] playingArea = new Tile[128][72];
+    private Tile[][] playingArea = new Tile[72][128]; // 72 riadkov (y), 128 stĺpcov (x)
 
     private Tile[][] originalVillage;
     private Tile[][] currentWaveMap;
 
     public PlayingArea() {
-        for (int y = 0; y < 128; y++) {
-            for (int x = 0; x < 72; x++) {
+        for (int y = 0; y < 72; y++) {
+            for (int x = 0; x < 128; x++) {
                 this.playingArea[y][x] = new Tile(x, y);
             }
         }
     }
 
     public Tile getTile(int x, int y) {
-        return this.playingArea[x][y];
+        if (!isValidCoordinate(x, y)) return null;
+        return this.playingArea[y][x];
     }
 
     public Tile[][] getAllTiles() {
@@ -31,7 +32,7 @@ public class PlayingArea {
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (!isValidCoordinate(x + i, y + j) || !playingArea[x + i][y + j].isWalkable()) {
+                if (!isValidCoordinate(x + i, y + j) || !playingArea[y + j][x + i].isWalkable()) {
                     System.out.println("Cannot place building: space is occupied or invalid.");
                     return false;
                 }
@@ -40,7 +41,7 @@ public class PlayingArea {
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                playingArea[x + i][y + j].setBuilding(building);
+                playingArea[y + j][x + i].setBuilding(building);
             }
         }
 
@@ -73,5 +74,4 @@ public class PlayingArea {
     public boolean isWithinBounds(int tileX, int tileY) {
         return tileX >= 0 && tileY >= 0 && tileX < 128 && tileY < 72;
     }
-
 }

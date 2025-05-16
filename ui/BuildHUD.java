@@ -30,7 +30,7 @@ public class BuildHUD extends AbstractHUD {
         // Shop panel (hidden initially)
         this.shop = new Shop(playingArea, 500);
         this.shop.setVisible(false);
-        this.shop.setBounds(130, 40, 400, 200);
+        this.shop.setBounds(10, 400, 150, 250);
         add(this.shop);
 
         // Button action: toggle shop visibility

@@ -1,7 +1,7 @@
 package buildings;
 
 import game.PlayingArea;
-import zombies.Zombie;
+import slimes.Slime;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -60,7 +60,7 @@ public abstract class Building {
         this.image = image;
     }
 
-    public abstract void attack(List<Zombie> zombies);
+    public abstract void attack(List<Slime> slimes);
 
     public void takeDamage(int amount) {
         this.health -= amount;
@@ -107,6 +107,10 @@ public abstract class Building {
             return true;
         }
         return false;
+    }
+
+    public void updateCooldown() {
+        lastAttackTime = System.currentTimeMillis();
     }
 
     public String getName() {

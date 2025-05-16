@@ -1,9 +1,9 @@
-package zombies;
+package slimes;
 
 import game.PlayingArea;
 
-public class Feral extends Zombie {
-    public Feral(PlayingArea map, int startX, int startY) {
+public class BiterKing extends Slime {
+    public BiterKing(PlayingArea map, int startX, int startY) {
         super(map, startX, startY,100, 1,1,10,1,1,"resources/zombies/biter.png");
     }
 

@@ -1,7 +1,7 @@
 package game;
 
-import zombies.Zombie;
-import zombies.Biter;
+import slimes.Slime;
+import slimes.Biter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +9,12 @@ import java.util.Random;
 
 public class WaveManager {
     private PlayingArea playingArea;
-    private List<Zombie> zombies;
+    private List<Slime> slimes;
     private Random random;
 
     public WaveManager(PlayingArea playingArea) {
         this.playingArea = playingArea;
-        this.zombies = new ArrayList<>();
+        this.slimes = new ArrayList<>();
         this.random = new Random();
     }
 
@@ -44,14 +44,14 @@ public class WaveManager {
         }
 
         if (playingArea.getTile(x, y).isWalkable()) {
-            Zombie z = new Biter(playingArea, x, y);  // môžeš zmeniť na iný typ
-            zombies.add(z);
+            Slime z = new Biter(playingArea, x, y);  // môžeš zmeniť na iný typ
+            slimes.add(z);
             System.out.println("Spawned zombie at (" + x + ", " + y + ")");
         }
     }
 
-    public List<Zombie> getZombies() {
-        return zombies;
+    public List<Slime> getZombies() {
+        return slimes;
     }
 
     public void startNextWave() {

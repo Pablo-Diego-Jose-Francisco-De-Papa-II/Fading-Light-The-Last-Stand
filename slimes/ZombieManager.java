@@ -1,34 +1,34 @@
-package zombies;
+package slimes;
 
 import java.util.ArrayList;
 import game.PlayingArea;
 
 public class ZombieManager {
-    private final ArrayList<Zombie> zombies = new ArrayList<>();
+    private final ArrayList<Slime> slimes = new ArrayList<>();
     private final PlayingArea map;
 
     public ZombieManager(PlayingArea map) {
         this.map = map;
     }
 
-    public void spawnZombie(Zombie zombie) {
-        this.zombies.add(zombie);
+    public void spawnZombie(Slime slime) {
+        this.slimes.add(slime);
     }
 
     public void updateZombies() {
-        for (int i = 0; i < this.zombies.size(); i++) {
-            Zombie z = this.zombies.get(i);
+        for (int i = 0; i < this.slimes.size(); i++) {
+            Slime z = this.slimes.get(i);
             z.move();
             z.dealDamage();
             if (z.getHealth() <= 0) {
                 z.die();
-                this.zombies.remove(i);
+                this.slimes.remove(i);
                 i--;
             }
         }
     }
 
-    public ArrayList<Zombie> getZombies() {
-        return this.zombies;
+    public ArrayList<Slime> getZombies() {
+        return this.slimes;
     }
 }

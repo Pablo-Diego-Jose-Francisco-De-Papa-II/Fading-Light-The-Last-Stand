@@ -1,4 +1,4 @@
-package zombies;
+package slimes;
 
 import game.PlayingArea;
 import game.Tile;
@@ -7,7 +7,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 
-public abstract class Zombie {
+public abstract class Slime {
 
     private int health;
     private int size;
@@ -21,7 +21,7 @@ public abstract class Zombie {
     private int x;
     private int y;
 
-    public Zombie(PlayingArea map, int startX, int startY, int health, int size, int speed, int attackDamage, int attackRange, int attackSpeed, String icon) {
+    public Slime(PlayingArea map, int startX, int startY, int health, int size, int speed, int attackDamage, int attackRange, int attackSpeed, String icon) {
         this.map = map;
         this.x = startX;
         this.y = startY;

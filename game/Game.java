@@ -26,7 +26,7 @@ public class Game {
         this.playingArea = new PlayingArea();
         this.buildHUD = new BuildHUD(this.playingArea);
         this.waveHUD = new WaveHUD(this);
-        this.gamePanel = new GamePanel(this.playingArea);
+        this.gamePanel = new GamePanel(this.playingArea, this);
 
         // Initialize layered pane
         layeredPane = new JLayeredPane();

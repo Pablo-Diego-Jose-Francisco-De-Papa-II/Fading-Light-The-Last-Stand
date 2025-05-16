@@ -1,8 +1,8 @@
 import buildings.Building;
-import buildings.WatchTower;
 import game.PlayingArea;
 import game.WaveManager;
-import zombies.Zombie;
+import slimes.Slime;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -70,10 +70,10 @@ public class GameGUI extends JFrame {
         g.fillRect(0, 0, gamePanel.getWidth(), gamePanel.getHeight());
 
         // Draw zombies
-        List<Zombie> zombies = waveManager.getZombies();
-        for (Zombie zombie : zombies) {
+        List<Slime> slimes = waveManager.getZombies();
+        for (Slime slime : slimes) {
             g.setColor(Color.RED);
-            g.fillRect(zombie.getX() * 20, zombie.getY() * 20, 20, 20); // Example size for zombies
+            g.fillRect(slime.getX() * 20, slime.getY() * 20, 20, 20); // Example size for zombies
         }
     }
 
@@ -85,8 +85,8 @@ public class GameGUI extends JFrame {
 
     private void updateZombies() {
         // Update the game state: move zombies, check for collisions, etc.
-        for (Zombie zombie : waveManager.getZombies()) {
-            zombie.move();
+        for (Slime slime : waveManager.getZombies()) {
+            slime.move();
         }
         gamePanel.repaint();
     }

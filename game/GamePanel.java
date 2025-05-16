@@ -4,15 +4,48 @@ import buildings.Building;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 public class GamePanel extends JPanel {
     private final PlayingArea playingArea;
+    private final Game game; // added reference to Game
     private static final int TILE_SIZE = 10;
 
-    public GamePanel(PlayingArea playingArea) {
+    public GamePanel(PlayingArea playingArea, Game game) {
         this.playingArea = playingArea;
+        this.game = game;
         setPreferredSize(new Dimension(128 * TILE_SIZE, 72 * TILE_SIZE));
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int tileX = e.getX() / TILE_SIZE;
+                int tileY = e.getY() / TILE_SIZE;
+
+                Shop shop = game.getBuildHUD().getShop();
+                String selected = shop.getSelectedBuilding();
+
+                if (selected != null) {
+                    int cost = shop.getCostForBuilding(selected);
+
+                    if (shop.getMoney() < cost) {
+                        JOptionPane.showMessageDialog(GamePanel.this, "Not enough scrap.");
+                        return;
+                    }
+
+                    Building building = Building.createBuilding(selected, playingArea, tileX, tileY);
+                    if (building != null && playingArea.placeBuilding(building)) {
+                        shop.subtractMoney(cost);
+                        shop.clearSelectedBuilding();
+                        repaint();
+                    } else {
+                        JOptionPane.showMessageDialog(GamePanel.this, "Cannot place " + selected + " here.");
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -38,7 +71,6 @@ public class GamePanel extends JPanel {
                 if (building != null) {
                     BufferedImage img = building.getImage();
                     if (img != null) {
-                        // Draw building image scaled to tile size * building size
                         g.drawImage(img,
                                 building.getX() * TILE_SIZE,
                                 building.getY() * TILE_SIZE,
@@ -46,7 +78,6 @@ public class GamePanel extends JPanel {
                                 building.getSize() * TILE_SIZE,
                                 null);
                     } else {
-                        // fallback if no image - draw a colored square
                         g.setColor(Color.RED);
                         g.fillRect(building.getX() * TILE_SIZE, building.getY() * TILE_SIZE,
                                 building.getSize() * TILE_SIZE, building.getSize() * TILE_SIZE);

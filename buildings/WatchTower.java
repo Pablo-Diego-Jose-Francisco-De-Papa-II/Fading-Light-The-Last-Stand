@@ -1,7 +1,7 @@
 package buildings;
 
 import game.PlayingArea;
-import zombies.Zombie;
+import slimes.Slime;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -35,21 +35,21 @@ public class WatchTower extends Building {
     }
 
     @Override
-    public void attack(List<Zombie> zombies) {
+    public void attack(List<Slime> slimes) {
         if (destroyed) return;
         if (!canAttack()) return;
 
-        for (Zombie zombie : zombies) {
-            if (isInRange(zombie)) {
-                zombie.takeDamage(this.damage);
+        for (Slime slime : slimes) {
+            if (isInRange(slime)) {
+                slime.takeDamage(this.damage);
                 break;
             }
         }
     }
 
-    private boolean isInRange(Zombie zombie) {
-        int zx = zombie.getX();
-        int zy = zombie.getY();
+    private boolean isInRange(Slime slime) {
+        int zx = slime.getX();
+        int zy = slime.getY();
 
         int centerX = this.x + size / 2;
         int centerY = this.y + size / 2;
