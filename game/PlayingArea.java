@@ -1,6 +1,7 @@
 package game;
 
 import buildings.Building;
+import buildings.TownHall;
 
 public class PlayingArea {
     private static final int ROWS = 72;
@@ -15,7 +16,18 @@ public class PlayingArea {
     public PlayingArea() {
         buildingManager = new BuildingManager();
         initializeTiles();
+
+        // Place the Town Hall in the center
+        int centerX = (COLS - 6) / 2 - 3;
+        int centerY = (ROWS - 6) / 2 - 3;
+        TownHall townHall = new TownHall(this, centerX, centerY);
+        boolean placed = placeBuilding(townHall);
+
+        if (!placed) {
+            System.err.println("Failed to place Town Hall in the center of the map.");
+        }
     }
+
 
     // Initialize all tiles with their coordinates
     private void initializeTiles() {

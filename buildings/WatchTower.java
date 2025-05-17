@@ -23,7 +23,7 @@ public class WatchTower extends Building {
     }
 
     public WatchTower(PlayingArea map, int x, int y) {
-        super("Watch Tower", map, x, y, 50, // size 50x50 for example
+        super("Watch Tower", map, x, y, 3, // size 50x50 for example
                 100,                         // build cost
                 3,                           // max level
                 100,                         // max health

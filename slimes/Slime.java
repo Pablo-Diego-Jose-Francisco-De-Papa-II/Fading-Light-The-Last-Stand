@@ -77,9 +77,23 @@ public abstract class Slime {
         g.drawImage(image, x, y, size, size, null);
     }
 
-    public int getX() { return x; }
-    public int getY() { return y; }
-    public int getHealth() { return health; }
-    public String getIcon() { return icon; }
-    public boolean isDead() { return health <= 0; }
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public boolean isDead() {
+        return health <= 0;
+    }
 }
