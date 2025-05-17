@@ -28,7 +28,6 @@ public class PlayingArea {
         }
     }
 
-
     // Initialize all tiles with their coordinates
     private void initializeTiles() {
         for (int y = 0; y < ROWS; y++) {
@@ -154,8 +153,6 @@ public class PlayingArea {
     public Building getBuildingAt(int x, int y) {
         return getTile(x, y).getBuilding();
     }
-
-
 
     public boolean deleteBuilding(int x, int y) {
         Building b = getBuildingAt(x, y);

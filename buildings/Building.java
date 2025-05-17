@@ -177,4 +177,12 @@ public abstract class Building {
         this.attackSpeed = attackSpeed;
     }
 
+    public void removeYourself() {
+        for (int i = 0; i < this.size; i++) {
+            for (int j = 0; j < this.size; j++) {
+                this.map.getTile(this.x + i, this.y + j).removeBuilding();
+            }
+        }
+    }
+
 }
