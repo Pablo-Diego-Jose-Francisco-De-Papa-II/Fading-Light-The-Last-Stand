@@ -24,19 +24,18 @@ public class TownHall extends Building {
 
     public TownHall(PlayingArea map, int x, int y) {
         super("Town Hall", map, x, y,
-                6,      // size (maybe larger than other buildings)
-                0,        // no build cost (it's placed at game start)
-                1,        // level (no upgrade maybe)
-                1000,      // high health
-                0,        // no attack damage
-                0,        // no range
-                0.0f,     // no attack speed
+                10,
+                0,
+                1,
+                1000,
+                0,
+                0,
+                0.0f,
                 townHallImage);
     }
 
     @Override
     public void attack(List<Slime> slimes) {
-        // Town Hall does not attack
     }
 
     @Override

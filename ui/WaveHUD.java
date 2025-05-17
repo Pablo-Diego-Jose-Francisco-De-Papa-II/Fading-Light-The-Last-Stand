@@ -20,11 +20,14 @@ public class WaveHUD extends AbstractHUD {
 
         ImageIcon enemiesIcon = new ImageIcon("resources/slime_bg.png");
 
-        // Enemies Left label top-left corner with background icon
-        this.enemiesLeftLabel = new JLabel("Enemies Left: 0", enemiesIcon, JLabel.LEFT);
-        this.enemiesLeftLabel.setBounds(10, -10, 250, 90);
+        this.enemiesLeftLabel = new JLabel("Points left: 0");
+        this.enemiesLeftLabel.setBounds(90, -10, 250, 90);
         this.enemiesLeftLabel.setFont(new Font("Arial", Font.BOLD, 20));
         add(this.enemiesLeftLabel);
+
+        JLabel enemiesLeftLabel = new JLabel(new ImageIcon("resources/slime_bg.png"));
+        enemiesLeftLabel.setBounds(10, -10, 250, 90);
+        add(enemiesLeftLabel);
 
         // Time label centered at top middle
         this.timeLabel = new JLabel("00:00");
@@ -66,9 +69,8 @@ public class WaveHUD extends AbstractHUD {
         this.timeLabel.setText(time);
     }
 
-    // Method to update enemies left
     public void updateEnemiesLeft(int count) {
-        this.enemiesLeftLabel.setText("Enemies Left: " + count);
+        this.enemiesLeftLabel.setText("Points left: " + count);
     }
 
     // Getters for buttons to allow adding listeners externally

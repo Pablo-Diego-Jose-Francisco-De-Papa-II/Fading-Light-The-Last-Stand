@@ -18,8 +18,8 @@ public class PlayingArea {
         initializeTiles();
 
         // Place the Town Hall in the center
-        int centerX = (COLS - 6) / 2 - 3;
-        int centerY = (ROWS - 6) / 2 - 3;
+        int centerX = (COLS - 10) / 2 - 5;
+        int centerY = (ROWS - 10) / 2 - 5;
         TownHall townHall = new TownHall(this, centerX, centerY);
         boolean placed = placeBuilding(townHall);
 

@@ -15,7 +15,7 @@ public class WatchTower extends Building {
 
     static {
         try {
-            watchTowerImage = ImageIO.read(new File("resources/FadingLight-icon.png"));
+            watchTowerImage = ImageIO.read(new File("resources/kys.png"));
         } catch (IOException e) {
             System.err.println("Failed to load watchtower image.");
             watchTowerImage = null;
@@ -24,7 +24,7 @@ public class WatchTower extends Building {
 
     public WatchTower(PlayingArea map, int x, int y) {
         super("Watch Tower", map, x, y,
-                3,
+                6,
                 100,
                 3,
                 100,

@@ -2,7 +2,7 @@ import buildings.WatchTower;
 import game.Game;
 import game.PlayingArea;
 import game.BuildingManager;
-import slimes.Biter;
+import slimes.Goob;
 import ui.BuildHUD;
 
 import javax.swing.*;
@@ -26,22 +26,22 @@ public class Main {
             BuildingManager manager = game.getBuildingManager();
 
             // Create Biters (assuming Biter extends Slime and constructor exists)
-            Biter biter1 = new Biter(map, 40, 50);
-            Biter biter2 = new Biter(map, 60, 55);
-            Biter biter3 = new Biter(map, 100, 100);
+            Goob goob1 = new Goob(map, 40, 50);
+            Goob goob2 = new Goob(map, 60, 55);
+            Goob goob3 = new Goob(map, 100, 100);
 
-            manager.addSlime(biter1);
-            manager.addSlime(biter2);
-            manager.addSlime(biter3);
+            manager.addSlime(goob1);
+            manager.addSlime(goob2);
+            manager.addSlime(goob3);
 
             // Tower should already be in manager via placeBuilding(), but add just in case
             manager.addBuilding(tower);
 
             manager.update(); // Buildings attack slimes
 
-            System.out.println("Biter1 health: " + biter1.getHealth());
-            System.out.println("Biter2 health: " + biter2.getHealth());
-            System.out.println("Biter3 health: " + biter3.getHealth());
+            System.out.println("Biter1 health: " + goob1.getHealth());
+            System.out.println("Biter2 health: " + goob2.getHealth());
+            System.out.println("Biter3 health: " + goob3.getHealth());
 
             // Refresh UI
             game.getBuildHUD().repaint();

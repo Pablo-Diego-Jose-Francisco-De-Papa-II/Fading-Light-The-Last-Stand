@@ -24,7 +24,7 @@ public class Ballista extends Building {
 
     public Ballista(PlayingArea map, int x, int y) {
         super("Ballista", map, x, y,
-                4,
+                8,
                 150,
                 3,
                 100,

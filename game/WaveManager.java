@@ -1,7 +1,7 @@
 package game;
 
 import slimes.Slime;
-import slimes.Biter;
+import slimes.Goob;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class WaveManager {
         }
 
         if (playingArea.getTile(x, y).isWalkable()) {
-            Slime z = new Biter(playingArea, x, y);  // môžeš zmeniť na iný typ
+            Slime z = new Goob(playingArea, x, y);  // môžeš zmeniť na iný typ
             slimes.add(z);
             System.out.println("Spawned zombie at (" + x + ", " + y + ")");
         }

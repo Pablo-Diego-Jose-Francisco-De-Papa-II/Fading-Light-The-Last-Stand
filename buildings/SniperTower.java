@@ -24,7 +24,7 @@ public class SniperTower extends Building {
 
     public SniperTower(PlayingArea map, int x, int y) {
         super("Sniper Tower", map, x, y,
-                3,
+                6,
                 250,
                 3,
                 150,

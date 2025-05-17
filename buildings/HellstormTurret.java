@@ -24,7 +24,7 @@ public class HellstormTurret extends Building {
 
     public HellstormTurret(PlayingArea map, int x, int y) {
         super("Hellstorm Turret", map, x, y,
-                4,
+                8,
                 400,
                 2,
                 250,

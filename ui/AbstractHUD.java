@@ -22,7 +22,7 @@ public abstract class AbstractHUD extends JPanel {
         }
 
         // Vytvorenie labelu pre šrot
-        this.scrapLabel = new JLabel("420");
+        this.scrapLabel = new JLabel("0 scraps");
         this.scrapLabel.setBounds(1075, 10, 100, 50); // pozícia textu vedľa ikony
         this.scrapLabel.setFont(new Font("Arial", Font.BOLD, 20));
         add(this.scrapLabel);
@@ -45,6 +45,6 @@ public abstract class AbstractHUD extends JPanel {
     }
 
     public void updateScrap(int scrap) {
-        this.scrapLabel.setText(String.valueOf(scrap));
+        this.scrapLabel.setText(scrap + " scraps");
     }
 }

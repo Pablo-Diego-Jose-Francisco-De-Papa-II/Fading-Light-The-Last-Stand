@@ -5,8 +5,8 @@ import game.Game;
 import game.PlayingArea;
 import game.Shop;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import java.awt.Font;
 
 public class BuildHUD extends AbstractHUD {
 
@@ -35,39 +35,39 @@ public class BuildHUD extends AbstractHUD {
         add(this.startWaveButton);
 
         // Shop panel (hidden initially)
-        this.shop = new Shop(playingArea, 500);
+        this.shop = new Shop(playingArea, 50000);
         this.shop.setVisible(false);
         this.shop.setBounds(10, 400, 150, 250);
         add(this.shop);
 
         // Button action: toggle shop visibility
-        shopButton.addActionListener(e -> shop.setVisible(!shop.isVisible()));
+        this.shopButton.addActionListener(e -> this.shop.setVisible(!this.shop.isVisible()));
 
         // Upgrade Button
         this.upgradeButton = new JButton("Upgrade");
-        this.upgradeButton.setBounds(200, 600, 120, 40); // dočasná pozícia
+        this.upgradeButton.setBounds(200, 600, 120, 40);
         this.upgradeButton.setVisible(false);
         add(this.upgradeButton);
 
         // Remove Button
         this.removeButton = new JButton("Remove");
-        this.removeButton.setBounds(330, 600, 120, 40); // dočasná pozícia
+        this.removeButton.setBounds(330, 600, 120, 40);
         this.removeButton.setVisible(false);
         add(this.removeButton);
 
         // Action listeners (implementuj podľa potreby)
-        upgradeButton.addActionListener(e -> {
-            if (selectedBuilding != null) {
-                selectedBuilding.upgrade(); // alebo tvoja metóda
+        this.upgradeButton.addActionListener(e -> {
+            if (this.selectedBuilding != null) {
+                this.selectedBuilding.upgrade();
                 repaint();
             }
         });
 
-        removeButton.addActionListener(e -> {
-            if (selectedBuilding != null) {
-                selectedBuilding.removeYourself();
-                selectedBuilding = null;
-                hideUpgradeRemoveButtons();
+        this.removeButton.addActionListener(e -> {
+            if (this.selectedBuilding != null) {
+                this.selectedBuilding.removeYourself();
+                this.selectedBuilding = null;
+                this.hideUpgradeRemoveButtons();
                 repaint();
             }
         });
