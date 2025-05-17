@@ -3,11 +3,11 @@ package slimes;
 import java.util.ArrayList;
 import game.PlayingArea;
 
-public class ZombieManager {
+public class SlimeManager {
     private final ArrayList<Slime> slimes = new ArrayList<>();
     private final PlayingArea map;
 
-    public ZombieManager(PlayingArea map) {
+    public SlimeManager(PlayingArea map) {
         this.map = map;
     }
 
