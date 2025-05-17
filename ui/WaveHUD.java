@@ -34,19 +34,19 @@ public class WaveHUD extends AbstractHUD {
         add(this.timeLabel);
 
         // Pause button bottom right-ish
-        this.pauseButton = new JButton("||");
-        this.pauseButton.setBounds(1070, 620, 55, 35);
+        this.pauseButton = new JButton(">");
+        this.pauseButton.setBounds(1070, 660, 55, 50);
         this.pauseButton.setFont(new Font("Arial", Font.BOLD, 11));
         add(this.pauseButton);
 
         // Fast forward buttons next to pause
         this.fastForwardButton = new JButton(">>");
-        this.fastForwardButton.setBounds(1135, 620, 55, 35);
+        this.fastForwardButton.setBounds(1135, 660, 55, 50);
         this.fastForwardButton.setFont(new Font("Arial", Font.BOLD, 11));
         add(this.fastForwardButton);
 
         this.fastFastForwardButton = new JButton(">>>");
-        this.fastFastForwardButton.setBounds(1200, 620, 55, 35);
+        this.fastFastForwardButton.setBounds(1200, 660, 55, 50);
         this.fastFastForwardButton.setFont(new Font("Arial", Font.BOLD, 11));
         add(this.fastFastForwardButton);
 

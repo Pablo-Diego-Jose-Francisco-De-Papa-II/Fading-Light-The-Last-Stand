@@ -12,18 +12,32 @@ public abstract class AbstractHUD extends JPanel {
         setLayout(null);
         setBounds(0, 0, 1280, 720);
 
-        ImageIcon dayIcon = new ImageIcon("resources/calendar.png");
-        ImageIcon scrapIcon = new ImageIcon("resources/scrap_bg.png");
+        // Načítanie ikon bezpečným spôsobom
+        ImageIcon dayIcon = null;
 
-        this.dayLabel = new JLabel("27", dayIcon, JLabel.LEFT);
-        this.dayLabel.setBounds(1175, 65, 75, 75);
-        this.dayLabel.setForeground(Color.WHITE);
-        add(this.dayLabel);
+        try {
+            dayIcon = new ImageIcon("resources/calendar.png");
+        } catch (Exception e) {
+            System.err.println("Nepodarilo sa načítať ikony: " + e.getMessage());
+        }
 
-        this.scrapLabel = new JLabel("420", scrapIcon, JLabel.LEFT);
-        this.scrapLabel.setBounds(1020, 5, 250, 50);
-        this.scrapLabel.setForeground(Color.WHITE);
+        // Vytvorenie labelu pre šrot
+        this.scrapLabel = new JLabel("420");
+        this.scrapLabel.setBounds(1075, 10, 100, 50); // pozícia textu vedľa ikony
+        this.scrapLabel.setFont(new Font("Arial", Font.BOLD, 20));
         add(this.scrapLabel);
+
+        JLabel scrapIconLabel = new JLabel(new ImageIcon("resources/scrap_bg.png"));
+        scrapIconLabel.setBounds(1020, 5, 250, 50);  // pozícia a veľkosť ikony
+        add(scrapIconLabel);
+
+        // Vytvorenie labelu pre deň
+        this.dayLabel = new JLabel("69", dayIcon, JLabel.CENTER);
+        this.dayLabel.setBounds(1175, 65, 75, 75);
+        this.dayLabel.setHorizontalTextPosition(JLabel.CENTER);
+        this.dayLabel.setVerticalTextPosition(JLabel.CENTER);   // text v strede ikony
+        this.dayLabel.setFont(new Font("Arial", Font.BOLD, 25));
+        add(this.dayLabel);
     }
 
     public void updateDay(int day) {
