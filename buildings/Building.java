@@ -7,30 +7,28 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 public abstract class Building {
-    protected String name;
-    protected int x;
-    protected int y;
-    protected int size;
+    private String name;
+    private int x;
+    private int y;
+    private int size;
 
-    protected int level;
-    protected int maxLevel;
+    private int level;
+    private int maxLevel;
 
-    protected int cost;
-    protected int upgradeCost;
+    private int cost; // build cost
+    private int maxHealth;
+    private int health;
 
-    protected int health;
-    protected int maxHealth;
+    private int damage;
+    private int range;
+    private float attackSpeed; // attacks per second
+    private long lastAttackTime;
 
-    protected int damage;
-    protected int range;
-    protected float attackSpeed; // attacks per second
-    protected long lastAttackTime; // timestamp of last attack (ms)
+    private boolean destroyed;
 
-    protected boolean destroyed;
+    private PlayingArea map;
 
-    protected PlayingArea map;
-
-    protected BufferedImage image;
+    private BufferedImage image;
 
     public Building(String name, PlayingArea map, int x, int y, int size,
                     int cost, int maxLevel, int maxHealth,
@@ -45,8 +43,6 @@ public abstract class Building {
         this.maxLevel = maxLevel;
 
         this.cost = cost;
-        this.upgradeCost = cost;  // initial upgrade cost same as build cost
-
         this.maxHealth = maxHealth;
         this.health = maxHealth;
 
@@ -67,115 +63,118 @@ public abstract class Building {
         if (this.health <= 0) {
             this.destroyed = true;
             // Free tiles when destroyed
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-                    map.getTile(x + i, y + j).removeBuilding();
+            for (int i = 0; i < this.size; i++) {
+                for (int j = 0; j < this.size; j++) {
+                    this.map.getTile(this.x + i, this.y + j).removeBuilding();
                 }
             }
         }
     }
 
     public boolean isDestroyed() {
-        return destroyed;
+        return this.destroyed;
     }
 
-    // Upgrade increases stats and costs, max level check
-    public boolean upgrade() {
-        if (level >= maxLevel) {
-            System.out.println(name + " is already at max level.");
-            return false;
-        }
-        level++;
+    public abstract boolean upgrade();
 
-        // Example upgrade logic — tweak as needed
-        maxHealth += 50;
-        health = maxHealth;  // restore health on upgrade
-        damage += 10;
-        range += 1;
-        attackSpeed += 0.1f;  // faster shooting
-        upgradeCost += cost / 2;  // cost increases each upgrade
+    public abstract int getUpgradeCost();
 
-        System.out.println(name + " upgraded to level " + level);
-        return true;
-    }
-
-    // Attack cooldown check
     protected boolean canAttack() {
         long currentTime = System.currentTimeMillis();
-        if (currentTime - lastAttackTime >= (1000 / attackSpeed)) {
-            lastAttackTime = currentTime;
+        if (currentTime - this.lastAttackTime >= (1000 / this.attackSpeed)) {
+            this.lastAttackTime = currentTime;
             return true;
         }
         return false;
     }
 
     public void updateCooldown() {
-        lastAttackTime = System.currentTimeMillis();
+        this.lastAttackTime = System.currentTimeMillis();
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public int getX() {
-        return x;
+        return this.x;
     }
 
     public int getY() {
-        return y;
+        return this.y;
     }
 
     public int getSize() {
-        return size;
+        return this.size;
     }
 
     public int getLevel() {
-        return level;
+        return this.level;
     }
 
     public int getHealth() {
-        return health;
+        return this.health;
     }
 
     public int getMaxHealth() {
-        return maxHealth;
+        return this.maxHealth;
     }
 
     public int getDamage() {
-        return damage;
+        return this.damage;
     }
 
     public int getRange() {
-        return range;
+        return this.range;
     }
 
     public float getAttackSpeed() {
-        return attackSpeed;
+        return this.attackSpeed;
     }
 
     public int getCost() {
-        return cost;
-    }
-
-    public int getUpgradeCost() {
-        return upgradeCost;
+        return this.cost;
     }
 
     public BufferedImage getImage() {
-        return image;
+        return this.image;
     }
 
     public static Building createBuilding(String type, PlayingArea map, int x, int y) {
         return switch (type) {
             case "Watch Tower" -> new WatchTower(map, x, y);
             case "Ballista" -> new Ballista(map, x, y);
-            case "Mortar" -> new Mortar(map, x, y);
+            //case "Mortar" -> new Mortar(map, x, y);
             case "Sniper Tower" -> new SniperTower(map, x, y);
-            case "Flamethrower" -> new Flamethrower(map, x, y);
+            //case "Flamethrower" -> new Flamethrower(map, x, y);
             case "Hellstorm Turret" -> new HellstormTurret(map, x, y);
-            case "Rocket Silo" -> new RocketSilo(map, x, y);
+            //case "Rocket Silo" -> new RocketSilo(map, x, y);
             default -> null;
         };
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void setHealth(int health) {
+        this.health = Math.min(health, this.maxHealth);
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public void setRange(int range) {
+        this.range = range;
+    }
+
+    public void setAttackSpeed(float attackSpeed) {
+        this.attackSpeed = attackSpeed;
     }
 
 }

@@ -113,4 +113,56 @@ public class PlayingArea {
     public BuildingManager getBuildingManager() {
         return buildingManager;
     }
+
+    // Vylepšenie budovy na daných súradniciach
+    public boolean upgradeBuilding(int x, int y) {
+        Tile tile = getTile(x, y);
+        if (tile != null && tile.hasBuilding()) {
+            Building building = tile.getBuilding();
+            int upgradeCost = building.getUpgradeCost();
+            if (GameState.spendScrap(upgradeCost)) {
+                building.upgrade();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Odstránenie budovy na daných súradniciach
+    public boolean removeBuilding(int x, int y) {
+        Tile tile = getTile(x, y);
+        if (tile == null || !tile.hasBuilding()) return false;
+
+        Building building = tile.getBuilding();
+        int startX = building.getX();
+        int startY = building.getY();
+        int size = building.getSize();
+
+        for (int dy = 0; dy < size; dy++) {
+            for (int dx = 0; dx < size; dx++) {
+                Tile t = getTile(startX + dx, startY + dy);
+                if (t != null && t.getBuilding() == building) {
+                    t.removeBuilding();
+                }
+            }
+        }
+
+        System.out.println("Removed building at: " + startX + "," + startY);
+        return true;
+    }
+
+    public Building getBuildingAt(int x, int y) {
+        return getTile(x, y).getBuilding();
+    }
+
+
+
+    public boolean deleteBuilding(int x, int y) {
+        Building b = getBuildingAt(x, y);
+        if (b == null) return false;
+
+        getTile(x, y).removeBuilding();
+        return true;
+    }
+
 }

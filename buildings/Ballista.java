@@ -23,24 +23,75 @@ public class Ballista extends Building {
     }
 
     public Ballista(PlayingArea map, int x, int y) {
-        super("Ballista", map, x, y, 4, 120, 2, 140, 35, 120, 1.5f, ballistaImage);
+        super("Ballista", map, x, y,
+                4,
+                150,
+                3,
+                100,
+                20,
+                20,
+                0.25f,
+                ballistaImage
+        );
     }
 
     @Override
     public void attack(List<Slime> slimes) {
-        if (destroyed || !canAttack()) return;
+        if (isDestroyed() || !canAttack()) {
+            return;
+        }
 
         for (Slime slime : slimes) {
-            if (isInRange(slime)) {
-                slime.takeDamage(this.damage);
+            if (this.isInRange(slime)) {
+                slime.takeDamage(getDamage());
                 break;
             }
         }
     }
 
     private boolean isInRange(Slime slime) {
-        int dx = slime.getX() - (x + size / 2);
-        int dy = slime.getY() - (y + size / 2);
-        return dx * dx + dy * dy <= range * range;
+        int centerX = getX() + getSize() / 2;
+        int centerY = getY() + getSize() / 2;
+
+        int dx = slime.getX() - centerX;
+        int dy = slime.getY() - centerY;
+
+        return dx * dx + dy * dy <= getRange() * getRange();
     }
+
+    @Override
+    public boolean upgrade() {
+        if (getLevel() >= 3) {
+            System.out.println(getName() + " is already at max level!");
+            return false;
+        }
+
+        switch (getLevel()) {
+            case 1 -> {
+                setMaxHealth(getMaxHealth() + 25);
+                setHealth(getMaxHealth());
+                setDamage(getDamage() + 10);
+            }
+            case 2 -> {
+                setMaxHealth(getMaxHealth() + 50);
+                setHealth(getMaxHealth());
+                setDamage(getDamage() + 10);
+            }
+        }
+
+        setLevel(getLevel() + 1);
+
+        System.out.println(getName() + " upgraded to level " + getLevel());
+        return true;
+    }
+
+    @Override
+    public int getUpgradeCost() {
+        return switch (getLevel()) {
+            case 1 -> 300;
+            case 2 -> 450;
+            default -> 0;
+        };
+    }
+
 }

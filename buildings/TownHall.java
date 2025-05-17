@@ -38,4 +38,14 @@ public class TownHall extends Building {
     public void attack(List<Slime> slimes) {
         // Town Hall does not attack
     }
+
+    @Override
+    public boolean upgrade() {
+        return false;
+    }
+
+    @Override
+    public int getUpgradeCost() {
+        return 0;
+    }
 }

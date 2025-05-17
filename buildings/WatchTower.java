@@ -23,25 +23,32 @@ public class WatchTower extends Building {
     }
 
     public WatchTower(PlayingArea map, int x, int y) {
-        super("Watch Tower", map, x, y, 3, // size 50x50 for example
-                100,                         // build cost
-                3,                           // max level
-                100,                         // max health
-                50,                          // damage
-                100,                         // range (pixels)
-                1.0f,                        // attack speed
-                watchTowerImage);
+        super("Watch Tower", map, x, y,
+                3,
+                100,
+                3,
+                100,
+                10,
+                40,
+                0.5f,
+                watchTowerImage
+        );
     }
 
     @Override
     public void attack(List<Slime> slimes) {
-        if (destroyed) return;
-        if (!canAttack()) return;
+        if (isDestroyed()) {
+            return;
+        }
+
+        if (!canAttack()) {
+            return;
+        }
 
         for (Slime slime : slimes) {
-            if (isInRange(slime)) {
-                slime.takeDamage(this.damage);
-                break; // attack one slime per attack cycle
+            if (this.isInRange(slime)) {
+                slime.takeDamage(this.getDamage());
+                break;
             }
         }
     }
@@ -50,11 +57,47 @@ public class WatchTower extends Building {
         int zx = slime.getX();
         int zy = slime.getY();
 
-        int centerX = this.x + size / 2;
-        int centerY = this.y + size / 2;
+        int centerX = this.getX() + getSize() / 2;
+        int centerY = this.getY() + getSize() / 2;
 
         int dx = zx - centerX;
         int dy = zy - centerY;
-        return (dx * dx + dy * dy) <= (range * range);
+        return (dx * dx + dy * dy) <= (getRange() * getRange());
     }
+
+    @Override
+    public boolean upgrade() {
+        if (getLevel() >= 3) {
+            System.out.println(getName() + " is already at max level!");
+            return false;
+        }
+
+        switch (getLevel()) {
+            case 1 -> {
+                setMaxHealth(getMaxHealth() + 50);
+                setHealth(getMaxHealth());
+                setDamage(getDamage() + 15);
+            }
+            case 2 -> {
+                setMaxHealth(getMaxHealth() + 75);
+                setHealth(getMaxHealth());
+                setDamage(getDamage() + 25);
+            }
+        }
+
+        setLevel(getLevel() + 1);
+
+        System.out.println(getName() + " upgraded to level " + getLevel());
+        return true;
+    }
+
+    @Override
+    public int getUpgradeCost() {
+        return switch (getLevel()) {
+            case 1 -> 200;
+            case 2 -> 300;
+            default -> 0;
+        };
+    }
+
 }

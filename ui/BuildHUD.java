@@ -36,6 +36,9 @@ public class BuildHUD extends AbstractHUD {
 
         // Button action: toggle shop visibility
         shopButton.addActionListener(e -> shop.setVisible(!shop.isVisible()));
+
+
+
     }
 
     // Getters
@@ -50,4 +53,7 @@ public class BuildHUD extends AbstractHUD {
     public Shop getShop() {
         return this.shop;
     }
+
+
+
 }
