@@ -11,6 +11,10 @@ import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Trieda Shop predstavuje obchod, v ktorom si hráč môže vybrať a kúpiť budovy pomocou suroviny zvané "scrap".
+ * Každá budova má svoju cenu a je možné ju umiestniť kliknutím na mapu po zakúpení.
+ */
 public class Shop extends JPanel {
 
     private final PlayingArea map;
@@ -19,6 +23,12 @@ public class Shop extends JPanel {
 
     private final Map<String, Integer> buildingCosts = new HashMap<>();
 
+    /**
+     * Konštruktor triedy Shop.
+     *
+     * @param map          Referencia na hraciu plochu, kde sa budovy umiestňujú.
+     * @param initialMoney Počiatočný počet "scrapu", ktorým hráč disponuje.
+     */
     public Shop(PlayingArea map, int initialMoney) {
         this.map = map;
         this.scrap = initialMoney;
@@ -34,8 +44,14 @@ public class Shop extends JPanel {
         this.addBuyButton("Barricade", 5);
     }
 
+    /**
+     * Pridá tlačidlo do obchodu pre nákup konkrétnej budovy.
+     *
+     * @param name Názov budovy.
+     * @param cost Cena budovy v "scrape".
+     */
     private void addBuyButton(String name, int cost) {
-        this.buildingCosts.put(name, cost); // store cost in map
+        this.buildingCosts.put(name, cost);
 
         JButton button = new JButton(name + " - " + cost);
         button.setFont(new Font("Arial", Font.BOLD, 10));
@@ -50,29 +66,60 @@ public class Shop extends JPanel {
         add(button);
     }
 
+    /**
+     * Získa cenu určenej budovy.
+     *
+     * @param name Názov budovy.
+     * @return Cena budovy, alebo Integer.MAX_VALUE, ak budova nie je známa.
+     */
     public int getCostForBuilding(String name) {
         return this.buildingCosts.getOrDefault(name, Integer.MAX_VALUE);
     }
 
-    public void setMoney(int money) {
-        this.scrap = money;
+    /**
+     * Nastaví aktuálny počet "scrapu".
+     *
+     * @param scrap Nová hodnota "scrapu".
+     */
+    public void setScrap(int scrap) {
+        this.scrap = scrap;
     }
 
-    public int getMoney() {
+    /**
+     * Vráti aktuálny počet "scrapu".
+     *
+     * @return Aktuálny počet "scrapu".
+     */
+    public int getScrap() {
         return this.scrap;
     }
 
-    public void subtractMoney(int amount) {
+    /**
+     * Odpočíta dané množstvo "scrapu", ak je dostatok prostriedkov.
+     *
+     * @param amount Množstvo na odpočítanie.
+     */
+    public void subtractScrap(int amount) {
         if (this.scrap >= amount) {
-            this.setMoney(this.scrap - amount);
+            this.setScrap(this.scrap - amount);
         }
     }
 
+    /**
+     * Získa názov aktuálne zvolenej budovy.
+     *
+     * @return Názov vybranej budovy alebo {@code null}, ak žiadna nie je vybraná.
+     */
     public String getSelectedBuilding() {
         return this.selectedBuilding;
     }
 
+
+    /**
+     * Vymaže výber aktuálnej budovy.
+     */
     public void clearSelectedBuilding() {
         this.selectedBuilding = null;
     }
+
 }

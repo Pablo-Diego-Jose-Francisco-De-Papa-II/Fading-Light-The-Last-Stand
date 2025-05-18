@@ -5,7 +5,6 @@ import slimes.Goob;
 import slimes.Goobster;
 import slimes.Goobmass;
 import slimes.Goober;
-import slimes.FastGoob;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +25,7 @@ public class WaveManager {
     private double wavePoints = 100;
     private static final double SCALING_FACTOR = 1.4;
 
-    private double currentWavePoints; // stores wave points at the start of the current wave
+    private double currentWavePoints;
 
     private final Map<String, int[]> slimeTypes = new HashMap<>();
 
@@ -168,7 +167,6 @@ public class WaveManager {
 
         return switch (type) {
             case "Goob" -> new Goob(this.playingArea, x, y);
-            case "FastGoob" -> new FastGoob(this.playingArea, x, y);
             case "Goobster" -> new Goobster(this.playingArea, x, y);
             case "Goobmassa" -> new Goobmass(this.playingArea, x, y);
             case "Goober" -> new Goober(this.playingArea, x, y);

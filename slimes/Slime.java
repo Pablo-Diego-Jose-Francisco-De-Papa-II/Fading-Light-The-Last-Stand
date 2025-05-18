@@ -5,11 +5,18 @@ import game.PlayingArea;
 import game.Tile;
 
 import javax.imageio.ImageIO;
+
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.awt.Color;
+
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Abstraktná trieda reprezentujúca základného slima v hre.
+ * Slime sa pohybuje po mape, hľadá najbližšiu budovu a útočí na ňu.
+ */
 public abstract class Slime {
 
     private int health;
@@ -19,16 +26,28 @@ public abstract class Slime {
     private int attackRange;
     private int attackSpeed;
     private int attackCooldown = 0;
-    private String icon;
 
     private PlayingArea map;
     private int x;
     private int y;
+    private Color color;
 
-    private BufferedImage image;
-
+    /**
+     * Konštruktor pre inicializáciu vlastností slima.
+     *
+     * @param map           referencia na hernú mapu
+     * @param startX        X súradnica
+     * @param startY        Y súradnica
+     * @param health        životy
+     * @param size          veľkosť slima
+     * @param speed         rýchlosť slima
+     * @param attackDamage  poškodenie
+     * @param attackRange   dosah útoku
+     * @param attackSpeed   rýchlosť útokov
+     * @param color         farba slima
+     */
     public Slime(PlayingArea map, int startX, int startY, int health, int size, int speed,
-                 int attackDamage, int attackRange, int attackSpeed, String icon) {
+                 int attackDamage, int attackRange, int attackSpeed, Color color) {
         this.map = map;
         this.x = startX;
         this.y = startY;
@@ -38,16 +57,12 @@ public abstract class Slime {
         this.attackDamage = attackDamage;
         this.attackRange = attackRange;
         this.attackSpeed = attackSpeed;
-        this.icon = icon;
-
-        try {
-            this.image = ImageIO.read(new File(icon));
-        } catch (IOException e) {
-            e.printStackTrace();
-            this.image = null;
-        }
+        this.color = color;
     }
 
+    /**
+     * Aktualizuje stav slima. Hľadá najbližšiu budovu a ak je v dosahu, útočí na ňu.
+     */
     public void update() {
         if (this.attackCooldown > 0) {
             this.attackCooldown--;
@@ -70,6 +85,12 @@ public abstract class Slime {
         }
     }
 
+    /**
+     * Pohne slima o jedno políčko smerom k cieľovej pozícii, ak je možné po nej kráčať.
+     *
+     * @param targetX X súradnica cieľa
+     * @param targetY Y súradnica cieľa
+     */
     public void moveTowards(int targetX, int targetY) {
         int dx = Integer.compare(targetX, this.x);
         int dy = Integer.compare(targetY, this.y);
@@ -86,6 +107,12 @@ public abstract class Slime {
         }
     }
 
+    /**
+     * Útočí na budovu na cieľovej pozícii, ak je pripravený.
+     *
+     * @param targetX X súradnica cieľa
+     * @param targetY Y súradnica cieľa
+     */
     public void dealDamage(int targetX, int targetY) {
         if (this.attackCooldown > 0) {
             return;
@@ -105,33 +132,50 @@ public abstract class Slime {
         }
     }
 
+    /**
+     * Zníži život slima o dané množstvo.
+     *
+     * @param amount množstvo poškodenia
+     */
     public void takeDamage(int amount) {
         this.health -= amount;
     }
 
+    /**
+     * Vykreslí slima na plátno.
+     *
+     * @param g        grafický kontext
+     * @param tileSize veľkosť políčka
+     */
     public void draw(Graphics g, int tileSize) {
-        if (this.image != null) {
-            int pixelX = this.x * tileSize;
-            int pixelY = this.y * tileSize;
-            g.drawImage(this.image, pixelX, pixelY, tileSize, tileSize, null);
-        } else {
-            g.setColor(java.awt.Color.RED);
-            g.fillRect(this.x * tileSize, this.y * tileSize, tileSize, tileSize);
-        }
+        g.setColor(this.color);
+        g.fillRect(this.x * tileSize, this.y * tileSize, tileSize, tileSize);
     }
 
+    /**
+     * @return aktuálna X pozícia
+     */
     public int getX() {
         return this.x;
     }
 
+    /**
+     * @return aktuálna Y pozícia slima
+     */
     public int getY() {
         return this.y;
     }
 
+    /**
+     * @return aktuálne životy
+     */
     public int getHealth() {
         return this.health;
     }
 
+    /**
+     * @return true, ak je slime mŕtvy
+     */
     public boolean isDead() {
         return this.health <= 0;
     }

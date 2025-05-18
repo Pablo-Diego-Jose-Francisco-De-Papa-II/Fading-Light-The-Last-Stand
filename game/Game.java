@@ -12,6 +12,9 @@ import javax.swing.ImageIcon;
 import java.awt.Dimension;
 import java.awt.Image;
 
+/**
+ * Hlavná trieda Game zodpovedná za riadenie hernej logiky a prepínanie medzi režimami stavby a vlny.
+ */
 public class Game {
 
     private final BuildHUD buildHUD;
@@ -28,7 +31,11 @@ public class Game {
 
     private boolean waveActive = false;
 
+    /**
+     * Konštruktor inicializuje okno hry, všetky komponenty a spúšťa hlavnú hernú slučku.
+     */
     public Game() {
+        // Inicializácia okna
         this.frame = new JFrame("Fading Light: The Last Stand");
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setSize(1280, 720);
@@ -38,6 +45,7 @@ public class Game {
         Image iconImage = new ImageIcon("resources/FadingLight-icon.png").getImage();
         this.frame.setIconImage(iconImage);
 
+        // Inicializácia komponentov
         this.playingArea = new PlayingArea();
         this.buildingManager = this.playingArea.getBuildingManager();
         this.waveManager = new WaveManager(this.playingArea);
@@ -45,6 +53,7 @@ public class Game {
         this.waveHUD = new WaveHUD(this);
         this.gamePanel = new GamePanel(this.playingArea, this);
 
+        // Inicializácia vrstveného panelu
         this.layeredPane = new JLayeredPane();
         this.layeredPane.setPreferredSize(new Dimension(1280, 720));
         this.layeredPane.setLayout(null);
@@ -68,80 +77,114 @@ public class Game {
         this.startGameLoop();
     }
 
+    /**
+     * Prepne HUD podľa aktuálneho režimu hry.
+     *
+     * @param mode "build" alebo "wave"
+     */
     public void switchHUD(String mode) {
         this.buildHUD.setVisible("build".equals(mode));
         this.waveHUD.setVisible("wave".equals(mode));
-        this.waveActive = "wave".equals(mode);  // <-- Update waveActive flag here
+        this.waveActive = "wave".equals(mode);
         this.layeredPane.repaint();
         this.updateHUDs();
     }
 
+    /**
+     * @return WaveManager
+     */
     public WaveManager getWaveManager() {
         return this.waveManager;
     }
 
+
+    /**
+     * Spustí hlavnú hernú slučku pomocou Swing Timer-u.
+     */
     private void startGameLoop() {
         this.gameLoopTimer = new Timer(500, e -> this.updateGame());
         this.gameLoopTimer.start();
     }
 
+    /**
+     * Nastaví meškanie medzi tickmi hernej slučky.
+     *
+     * @param delayMillis oneskorenie v milisekundách
+     */
     public void setGameLoopDelay(int delayMillis) {
         if (this.gameLoopTimer != null) {
             this.gameLoopTimer.setDelay(delayMillis);
         }
     }
 
+    /**
+     * Aktualizuje stav hry – logiku budov, vlny, zobrazenie a kontrolu konca hry.
+     */
     private void updateGame() {
         this.buildingManager.update();
         this.waveManager.update();
-        //buildingManager.cleanup();
+        this.buildingManager.cleanup();
         this.gamePanel.repaint();
 
         this.checkTownHallStatus();
-
-        // Update HUD values every tick
         this.updateHUDs();
 
-        // If wave finished, reward scrap and switch to build HUD automatically
         if (this.waveActive && this.waveFinished()) {
             int reward = this.calculateScrapReward();
+
             GameState.addScrap(reward);
             GameState.nextDay();
+
             this.switchHUD("build");
             this.waveActive = false;
         }
     }
 
+    /**
+     * Aktualizuje informácie v HUDoch.
+     */
     private void updateHUDs() {
         int day = GameState.getDayCount();
         int enemiesLeft = this.calculateEnemiesLeft();
         int scrap = GameState.getScrap();
 
-        // Update build HUD
         this.buildHUD.updateDay(day);
         this.buildHUD.updateScrap(scrap);
 
-        // Update wave HUD
         this.waveHUD.updateDay(day);
         this.waveHUD.updateScrap(scrap);
         this.waveHUD.updateEnemiesLeft(enemiesLeft);
     }
 
+    /**
+     * Spočíta, koľko nepriateľov zostáva na bojisku.
+     *
+     * @return Počet nepriateľov, ktorí ešte neboli porazení
+     */
     private int calculateEnemiesLeft() {
-        // You can customize this if waveManager has appropriate getters
         int remainingPoints = 0;
         if (this.waveManager != null) {
             remainingPoints = (int)this.waveManager.getRemainingWavePoints();
         }
+
         return remainingPoints;
     }
 
+    /**
+     * Určí, či aktuálna vlna skončila.
+     *
+     * @return true ak vlna skončila, inak false
+     */
     private boolean waveFinished() {
-        // A wave is finished if no slimes remain and no more to spawn
         return this.waveManager.getSlimes().isEmpty() &&
                 this.waveManager.getNextSlimeIndex() >= this.waveManager.getSlimesToSpawn().size();
     }
 
+    /**
+     * Vypočíta odmenu za skončenú vlnu podľa minutých bodov.
+     *
+     * @return počet získaného scrapu
+     */
     private int calculateScrapReward() {
         double pointsSpent = this.waveManager.getCurrentWavePoints() - this.waveManager.getRemainingWavePoints();
         if (pointsSpent < 0) {
@@ -150,28 +193,33 @@ public class Game {
         return (int)pointsSpent;
     }
 
+    /**
+     * @return Referencia na BuildHUD
+     */
     public BuildHUD getBuildHUD() {
         return this.buildHUD;
     }
 
+    /**
+     * Spustí ďalšiu vlnu nepriateľov a prepne režim do „wave“.
+     */
     public void startWave() {
         this.waveManager.startNextWave();
         this.switchHUD("wave");
         this.waveActive = true;
     }
 
-
+    /**
+     * Skontroluje stav Town hall. Ak je zničená, ukončí aktuálnu vlnu a prepne hru do stavebného režimu.
+     */
     private void checkTownHallStatus() {
         Building townHall = this.buildingManager.getTownHall();
 
         if (townHall == null || townHall.isDestroyed()) {
             System.out.println("Town Hall destroyed! Ending wave and returning to build mode.");
-
-            // Clear all enemies
             this.waveManager.getSlimes().clear();
-
-            // Switch to build HUD
             this.switchHUD("build");
         }
     }
+
 }

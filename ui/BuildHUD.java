@@ -8,6 +8,10 @@ import game.Shop;
 import javax.swing.JButton;
 import java.awt.Font;
 
+/**
+ * Trieda BuildHUD reprezentuje používateľské rozhranie počas fázy budovania v hre.
+ * Umožňuje hráčovi nakupovať budovy, začať obrannú vlnu, ako aj upgradovať alebo odstrániť vybranú budovu.
+ */
 public class BuildHUD extends AbstractHUD {
 
     private final JButton shopButton;
@@ -18,7 +22,12 @@ public class BuildHUD extends AbstractHUD {
     private final JButton removeButton;
     private Building selectedBuilding;
 
-
+    /**
+     * Konštruktor vytvorí a inicializuje HUD pre fázu budovania.
+     *
+     * @param playingArea herná mapa
+     * @param game objekt hlavnej hry
+     */
     public BuildHUD(PlayingArea playingArea, Game game) {
         super();
 
@@ -34,20 +43,17 @@ public class BuildHUD extends AbstractHUD {
         this.startWaveButton.setFont(new Font("Arial", Font.BOLD, 27));
         add(this.startWaveButton);
 
-        // ✅ Tu pridáme action listener na spustenie vlny
         this.startWaveButton.addActionListener(e -> {
-            game.startWave(); // ✅ zavolá metódu v triede Game
-            game.switchHUD("wave"); // prepne z build módu na wave mód
+            game.startWave();
+            game.switchHUD("wave");
         });
 
-
-        // Shop panel (hidden initially)
-        this.shop = new Shop(playingArea, 50000);
+        // Shop panel
+        this.shop = new Shop(playingArea, 500);
         this.shop.setVisible(false);
         this.shop.setBounds(10, 400, 150, 250);
         add(this.shop);
 
-        // Button action: toggle shop visibility
         this.shopButton.addActionListener(e -> this.shop.setVisible(!this.shop.isVisible()));
 
         // Upgrade Button
@@ -62,7 +68,6 @@ public class BuildHUD extends AbstractHUD {
         this.removeButton.setVisible(false);
         add(this.removeButton);
 
-        // Action listeners (implementuj podľa potreby)
         this.upgradeButton.addActionListener(e -> {
             if (this.selectedBuilding != null) {
                 this.selectedBuilding.upgrade();
@@ -80,19 +85,22 @@ public class BuildHUD extends AbstractHUD {
         });
     }
 
-    // Getters
-    public JButton getShopButton() {
-        return this.shopButton;
-    }
-
-    public JButton getStartWaveButton() {
-        return this.startWaveButton;
-    }
-
+    /**
+     * Vracia inštanciu obchodu.
+     *
+     * @return Shop komponent s ponukou budov
+     */
     public Shop getShop() {
         return this.shop;
     }
 
+    /**
+     * Zobrazí tlačidlá na upgrade a odstránenie pre vybranú budovu.
+     *
+     * @param b vybraná budova
+     * @param screenX X súradnica
+     * @param screenY Y súradnica
+     */
     public void showUpgradeRemoveButtons(Building b, int screenX, int screenY) {
         this.selectedBuilding = b;
         this.upgradeButton.setBounds(screenX - 125, screenY + 20, 120, 40);
@@ -101,6 +109,9 @@ public class BuildHUD extends AbstractHUD {
         this.removeButton.setVisible(true);
     }
 
+    /**
+     * Skryje tlačidlá pre úpravu budovy a zruší výber budovy.
+     */
     public void hideUpgradeRemoveButtons() {
         this.upgradeButton.setVisible(false);
         this.removeButton.setVisible(false);

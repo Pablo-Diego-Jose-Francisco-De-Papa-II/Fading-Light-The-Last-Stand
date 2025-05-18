@@ -61,14 +61,14 @@ public class GamePanel extends JPanel {
                 if (selected != null) {
                     int cost = shop.getCostForBuilding(selected);
 
-                    if (shop.getMoney() < cost) {
+                    if (shop.getScrap() < cost) {
                         JOptionPane.showMessageDialog(GamePanel.this, "Not enough scrap.");
                         return;
                     }
 
                     Building building = Building.createBuilding(selected, playingArea, tileX, tileY);
                     if (building != null && playingArea.placeBuilding(building)) {
-                        shop.subtractMoney(cost);
+                        shop.subtractScrap(cost);
                         shop.clearSelectedBuilding();
                         game.getBuildHUD().hideUpgradeRemoveButtons();
                         repaint();
