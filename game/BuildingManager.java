@@ -56,7 +56,7 @@ public class BuildingManager {
 
         // Budovy útočia na blízkych slimov
         for (Building building : this.buildings) {
-            System.out.println(building.getName());
+            //System.out.println(building.getName());
             building.attack(this.slimes);
         }
     }

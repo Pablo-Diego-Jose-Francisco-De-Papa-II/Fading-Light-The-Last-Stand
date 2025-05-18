@@ -97,7 +97,6 @@ public class PlayingArea {
             this.buildingManager.addBuilding(building);
         }
 
-        System.out.println("Building placed at " + x + "," + y);
         return true;
     }
 

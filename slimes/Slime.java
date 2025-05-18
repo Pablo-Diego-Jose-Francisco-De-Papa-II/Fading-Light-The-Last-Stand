@@ -4,14 +4,8 @@ import buildings.Building;
 import game.PlayingArea;
 import game.Tile;
 
-import javax.imageio.ImageIO;
-
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.awt.Color;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Abstraktná trieda reprezentujúca základného slima v hre.
@@ -20,17 +14,17 @@ import java.io.IOException;
 public abstract class Slime {
 
     private int health;
-    private int size;
-    private int speed;
-    private int attackDamage;
-    private int attackRange;
-    private int attackSpeed;
+    private final int size;
+    private final int speed;
+    private final int attackDamage;
+    private final int attackRange;
+    private final int attackSpeed;
     private int attackCooldown = 0;
 
-    private PlayingArea map;
+    private final PlayingArea map;
     private int x;
     private int y;
-    private Color color;
+    private final Color color;
 
     /**
      * Konštruktor pre inicializáciu vlastností slima.
@@ -164,13 +158,6 @@ public abstract class Slime {
      */
     public int getY() {
         return this.y;
-    }
-
-    /**
-     * @return aktuálne životy
-     */
-    public int getHealth() {
-        return this.health;
     }
 
     /**
