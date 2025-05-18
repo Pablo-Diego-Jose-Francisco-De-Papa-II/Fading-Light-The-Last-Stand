@@ -9,9 +9,10 @@ public class PlayingArea {
 
     private Tile[][] playingArea = new Tile[ROWS][COLS];
     private Tile[][] originalVillage;
-    private Tile[][] currentWaveMap;
 
     private BuildingManager buildingManager;
+
+    private final TownHall townHall;
 
     public PlayingArea() {
         buildingManager = new BuildingManager();
@@ -20,7 +21,8 @@ public class PlayingArea {
         // Place the Town Hall in the center
         int centerX = (COLS - 10) / 2;
         int centerY = (ROWS - 10) / 2;
-        TownHall townHall = new TownHall(this, centerX, centerY);
+        townHall = new TownHall(this, centerX, centerY);
+        buildingManager.addBuilding(townHall);
         boolean placed = placeBuilding(townHall);
 
         if (!placed) {
@@ -94,6 +96,31 @@ public class PlayingArea {
         }
     }
 
+    // Restore village state fully after wave failure
+    public void restoreVillageState() {
+        resetToVillage();
+
+        // Clear and rebuild building list from restored tiles
+        buildingManager.getBuildings().clear();
+
+        for (int y = 0; y < playingArea.length; y++) {
+            for (int x = 0; x < playingArea[0].length; x++) {
+                Tile tile = playingArea[y][x];
+                if (tile.hasBuilding()) {
+                    Building b = tile.getBuilding();
+                    if (!buildingManager.getBuildings().contains(b)) {
+                        buildingManager.addBuilding(b);
+                    }
+                }
+            }
+        }
+
+        // Clear all slimes, since wave failed
+        buildingManager.getSlimes().clear();
+
+        System.out.println("Village state restored after wave failure.");
+    }
+
     // Deep copy of tiles array
     private Tile[][] deepCopyTiles(Tile[][] source) {
         Tile[][] copy = new Tile[source.length][source[0].length];
@@ -162,7 +189,7 @@ public class PlayingArea {
         return true;
     }
 
-    // V triede PlayingArea
+    // Find nearest building to given coords
     public int[] findNearestBuilding(int fromX, int fromY) {
         int minDistance = Integer.MAX_VALUE;
         int[] nearest = null;
@@ -191,13 +218,11 @@ public class PlayingArea {
                     Building b = tile.getBuilding();
                     if ("Town Hall".equals(b.getName())) {
                         System.out.println("Town Hall HP: " + b.getHealth());
-                        return; // Ak chceš vypísať len prvý nájdený Town Hall
+                        return;
                     }
                 }
             }
         }
         System.out.println("Town Hall nebola nájdená.");
     }
-
-
 }

@@ -1,6 +1,7 @@
 package game;
 
 import buildings.Building;
+import buildings.TownHall;
 import slimes.Slime;
 
 import java.util.ArrayList;
@@ -13,20 +14,20 @@ public class BuildingManager {
     private final List<Slime> slimes = new ArrayList<>();
 
     public void addBuilding(Building building) {
-        if (!buildings.contains(building)) {
-            buildings.add(building);
+        if (!this.buildings.contains(building)) {
+            this.buildings.add(building);
         }
     }
 
     public void addSlime(Slime slime) {
-        if (!slimes.contains(slime)) {
-            slimes.add(slime);
+        if (!this.slimes.contains(slime)) {
+            this.slimes.add(slime);
         }
     }
 
     public void update() {
         // Update slimes
-        Iterator<Slime> slimeIterator = slimes.iterator();
+        Iterator<Slime> slimeIterator = this.slimes.iterator();
         while (slimeIterator.hasNext()) {
             Slime slime = slimeIterator.next();
             slime.update();
@@ -36,21 +37,30 @@ public class BuildingManager {
         }
 
         // Buildings attack nearby slimes
-        for (Building building : buildings) {
-            building.attack(slimes);
+        for (Building building : this.buildings) {
+            building.attack(this.slimes);
         }
     }
 
     public void cleanup() {
         // Remove destroyed buildings
-        buildings.removeIf(Building::isDestroyed);
+        this.buildings.removeIf(Building::isDestroyed);
     }
 
     public List<Building> getBuildings() {
-        return buildings;
+        return this.buildings;
     }
 
     public List<Slime> getSlimes() {
-        return slimes;
+        return this.slimes;
+    }
+
+    public Building getTownHall() {
+        for (Building b : this.buildings) {
+            if (b instanceof TownHall) {
+                return b;
+            }
+        }
+        return null;
     }
 }

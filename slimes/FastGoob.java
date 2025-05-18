@@ -1,19 +1,17 @@
-//package slimes;
-//
-//import game.PlayingArea;
-//
-//public class FastGoob extends Slime {
-//    public FastGoob(PlayingArea map, int startX, int startY) {
-//        super(map, startX, startY,100, 1,1,10,1,"resources/zombies/right.png");
-//    }
-//
-//    @Override
-//    public void dealDamage() {
-//
-//    }
-//
-//    @Override
-//    public void die() {
-//
-//    }
-//}
+package slimes;
+
+import game.PlayingArea;
+
+public class FastGoob extends Slime {
+
+    public FastGoob(PlayingArea map, int x, int y) {
+        super(map, x, y,
+                1,
+                32,
+                1,
+                0,
+                1,
+                30,
+                "resources/floor.png");
+    }
+}

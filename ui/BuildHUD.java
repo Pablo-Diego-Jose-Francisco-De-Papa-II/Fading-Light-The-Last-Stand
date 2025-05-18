@@ -36,7 +36,7 @@ public class BuildHUD extends AbstractHUD {
 
         // ✅ Tu pridáme action listener na spustenie vlny
         this.startWaveButton.addActionListener(e -> {
-            game.startFirstWave(); // ✅ zavolá metódu v triede Game
+            game.startWave(); // ✅ zavolá metódu v triede Game
             game.switchHUD("wave"); // prepne z build módu na wave mód
         });
 

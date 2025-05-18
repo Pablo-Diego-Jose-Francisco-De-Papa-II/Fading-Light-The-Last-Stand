@@ -81,15 +81,17 @@ public class Game {
     }
 
     private void startGameLoop() {
-        Timer timer = new Timer(16, e -> updateGame());
+        Timer timer = new Timer(500, e -> updateGame());
         timer.start();
     }
 
     private void updateGame() {
         buildingManager.update();
-        waveManager.update();     // ✅ Toto je kľúčové – aby sa slizáky hýbali
+        waveManager.update();
         buildingManager.cleanup();
         gamePanel.repaint();
+
+        checkTownHallStatus();
     }
 
 
@@ -101,8 +103,22 @@ public class Game {
         return waveHUD;
     }
 
-    public void startFirstWave() {
-        waveManager.startFirstWave(); // ✅ OPRAVA
+    public void startWave() {
+        waveManager.startNextWave();
+    }
+
+    private void checkTownHallStatus() {
+        Building townHall = buildingManager.getTownHall();
+
+        if (townHall == null || townHall.isDestroyed()) {
+            System.out.println("Town Hall destroyed! Ending wave and returning to build mode.");
+
+            // Vyčisti nepriateľov
+            waveManager.getSlimes().clear();
+
+            // Prepni na build mód
+            switchHUD("build");
+        }
     }
 
 }

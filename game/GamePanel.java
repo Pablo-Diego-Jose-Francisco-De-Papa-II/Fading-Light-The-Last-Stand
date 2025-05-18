@@ -1,7 +1,6 @@
 package game;
 
 import buildings.Building;
-import buildings.TownHall;
 import slimes.Slime;
 
 import javax.swing.*;
@@ -122,7 +121,7 @@ public class GamePanel extends JPanel {
     }
 
     private void drawZombies(Graphics g) {
-        java.util.List<Slime> zombies = game.getWaveManager().getZombies();
+        java.util.List<Slime> zombies = game.getWaveManager().getSlimes();
         playingArea.printTownHallHP();
 
         for (Slime slime : zombies) {

@@ -36,35 +36,37 @@ public abstract class Slime {
     }
 
     public void update() {
-        if (attackCooldown > 0) {
-            attackCooldown--;
+        if (this.attackCooldown > 0) {
+            this.attackCooldown--;
         }
 
-        int[] target = map.findNearestBuilding(x, y);
-        if (target == null) return;
+        int[] target = this.map.findNearestBuilding(this.x, this.y);
+        if (target == null) {
+            return;
+        }
 
         int targetX = target[0];
         int targetY = target[1];
 
-        int distance = Math.abs(x - targetX) + Math.abs(y - targetY);
+        int distance = Math.abs(this.x - targetX) + Math.abs(this.y - targetY);
 
-        if (distance <= attackRange) {
-            dealDamage(targetX, targetY);  // Tu posielame pozíciu budovy, aby sme na ňu útočili
+        if (distance <= this.attackRange) {
+            this.dealDamage(targetX, targetY);  // Tu posielame pozíciu budovy, aby sme na ňu útočili
         } else {
-            moveTowards(targetX, targetY);
+            this.moveTowards(targetX, targetY);
         }
     }
 
 
     public void moveTowards(int targetX, int targetY) {
-        int dx = Integer.compare(targetX, x);
-        int dy = Integer.compare(targetY, y);
+        int dx = Integer.compare(targetX, this.x);
+        int dy = Integer.compare(targetY, this.y);
 
-        int newX = x + dx;
-        int newY = y + dy;
+        int newX = this.x + dx;
+        int newY = this.y + dy;
 
-        if (map.isValidCoordinate(newX, newY)) {
-            Tile nextTile = map.getTile(newX, newY);
+        if (this.map.isValidCoordinate(newX, newY)) {
+            Tile nextTile = this.map.getTile(newX, newY);
             if (nextTile != null && nextTile.isWalkable()) {
                 this.x = newX;
                 this.y = newY;
@@ -73,14 +75,16 @@ public abstract class Slime {
     }
 
     public void dealDamage(int targetX, int targetY) {
-        if (attackCooldown > 0) return;
+        if (this.attackCooldown > 0) {
+            return;
+        }
 
         Tile tile = this.map.getTile(targetX, targetY);
         if (tile != null) {
             Building building = tile.getBuilding();
             if (building != null) {
                 building.takeDamage(this.attackDamage);
-                attackCooldown = attackSpeed;
+                this.attackCooldown = this.attackSpeed;
 
                 if (building.isDestroyed()) {
                     tile.removeBuilding();
@@ -92,29 +96,42 @@ public abstract class Slime {
 
 
     public void die() {
-        System.out.println("Slime at " + x + "," + y + " died.");
+        System.out.println("Slime at " + this.x + "," + this.y + " died.");
         // Tu by si mal informovať správcu slimákov, že zomrel (napr. odstrániť z listu)
     }
 
     public void takeDamage(int amount) {
         this.health -= amount;
         if (this.health <= 0) {
-            die();
+            this.die();
         }
     }
 
     public void draw(Graphics g, int tileSize) {
         Image image = Toolkit.getDefaultToolkit().getImage(this.icon);
-        int pixelX = x * tileSize;
-        int pixelY = y * tileSize;
+        int pixelX = this.x * tileSize;
+        int pixelY = this.y * tileSize;
         g.drawImage(image, pixelX, pixelY, tileSize, tileSize, null);
     }
 
 
-    public int getX() { return x; }
-    public int getY() { return y; }
-    public int getHealth() { return health; }
-    public boolean isDead() { return health <= 0; }
+    public int getX() {
+        return this.x;
+    }
 
-    public String getIcon() { return icon; }
+    public int getY() {
+        return this.y;
+    }
+
+    public int getHealth() {
+        return this.health;
+    }
+
+    public boolean isDead() {
+        return this.health <= 0;
+    }
+
+    public String getIcon() {
+        return this.icon;
+    }
 }
