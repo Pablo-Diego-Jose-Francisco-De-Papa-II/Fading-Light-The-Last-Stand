@@ -13,6 +13,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
+/**
+ * Trieda reprezentujúca panel hry, ktorý zobrazuje hraciu plochu, budovy a slimov.
+ * Panel zároveň spracováva kliknutia myšou pre umiestňovanie budov a interakciu s nimi.
+ */
 public class GamePanel extends JPanel {
     private final PlayingArea playingArea;
     private final Game game;
@@ -20,6 +24,12 @@ public class GamePanel extends JPanel {
     private static final int WIDTH = 128;
     private static final int HEIGHT = 72;
 
+    /**
+     * Vytvorí nový herný panel so zadanou hernou plochou a hrou.
+     *
+     * @param playingArea herná plocha s times a budovami
+     * @param game        inštancia hry pre prístup k ďalším komponentom
+     */
     public GamePanel(PlayingArea playingArea, Game game) {
         this.playingArea = playingArea;
         this.game = game;
@@ -31,9 +41,9 @@ public class GamePanel extends JPanel {
                 int tileX = e.getX() / TILE_SIZE;
                 int tileY = e.getY() / TILE_SIZE;
 
-                // Kontrola hraníc
+                // Kontrola, či klik nie je mimo hernej plochy
                 if (tileX < 0 || tileX >= WIDTH || tileY < 0 || tileY >= HEIGHT) {
-                    return; // Klik mimo hracej plochy
+                    return;
                 }
 
                 Tile tile = playingArea.getTile(tileX, tileY);
@@ -43,6 +53,7 @@ public class GamePanel extends JPanel {
 
                 Building clickedBuilding = tile.getBuilding();
                 if (clickedBuilding != null) {
+                    // Ak ide o budovu, ktorá nie je Town Hall, zobraz možnosti upgradu/odstránenia
                     if (!"Town Hall".equals(clickedBuilding.getName())) {
                         game.getBuildHUD().showUpgradeRemoveButtons(clickedBuilding, e.getX(), e.getY());
                     } else {
@@ -51,6 +62,7 @@ public class GamePanel extends JPanel {
                     return;
                 }
 
+                // Ak nie je na dlaždici budova, over vybranú budovu v obchode a pokus sa ju postaviť
                 Shop shop = game.getBuildHUD().getShop();
                 if (shop == null) {
                     return;
@@ -82,14 +94,24 @@ public class GamePanel extends JPanel {
         });
     }
 
+    /**
+     * Vykreslí komponent vrátane mriežky, budov a nepriateľov.
+     *
+     * @param g grafický kontext na kreslenie
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         this.drawGrid(g);
         this.drawBuildings(g);
-        this.drawZombies(g);
+        this.drawSlimes(g);
     }
 
+    /**
+     * Vykreslí mriežku dlaždíc na hernej ploche.
+     *
+     * @param g grafický kontext na kreslenie
+     */
     private void drawGrid(Graphics g) {
         g.setColor(Color.LIGHT_GRAY);
 
@@ -100,6 +122,11 @@ public class GamePanel extends JPanel {
         }
     }
 
+    /**
+     * Vykreslí všetky budovy na hernej ploche.
+     *
+     * @param g grafický kontext na kreslenie
+     */
     private void drawBuildings(Graphics g) {
         java.util.HashSet<Building> drawn = new java.util.HashSet<>();
 
@@ -130,11 +157,16 @@ public class GamePanel extends JPanel {
         }
     }
 
-    private void drawZombies(Graphics g) {
-        java.util.List<Slime> zombies = this.game.getWaveManager().getSlimes();
-        this.playingArea.printTownHallHP();
+    /**
+     * Vykreslí všetky nepriateľské slime na hernej ploche.
+     *
+     * @param g grafický kontext na kreslenie
+     */
+    private void drawSlimes(Graphics g) {
+        java.util.List<Slime> slimes = this.game.getWaveManager().getSlimes();
+        //this.playingArea.printTownHallHP();
 
-        for (Slime slime : zombies) {
+        for (Slime slime : slimes) {
             slime.draw(g, TILE_SIZE);
         }
     }

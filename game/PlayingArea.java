@@ -3,6 +3,10 @@ package game;
 import buildings.Building;
 import buildings.TownHall;
 
+/**
+ * Trieda PlayingArea reprezentuje herné pole so štvorcovými dlaždicami a umožňuje
+ * umiestňovanie budov, prácu s manažérom budov a obnovovanie pôvodného stavu dediny.
+ */
 public class PlayingArea {
     private static final int ROWS = 72;
     private static final int COLS = 128;
@@ -14,11 +18,14 @@ public class PlayingArea {
 
     private final TownHall townHall;
 
+    /**
+     * Vytvorí novú hraciu plochu, inicializuje dlaždice a umiestni radnicu do stredu mapy.
+     */
     public PlayingArea() {
         this.buildingManager = new BuildingManager();
         this.initializeTiles();
 
-        // Place the Town Hall in the center
+        // Umiestnenie Town hall na stred
         int centerX = (COLS - 10) / 2;
         int centerY = (ROWS - 10) / 2;
         this.townHall = new TownHall(this, centerX, centerY);
@@ -30,7 +37,9 @@ public class PlayingArea {
         }
     }
 
-    // Initialize all tiles with their coordinates
+    /**
+     * Inicializuje každú dlaždicu v hracej ploche s jej súradnicami.
+     */
     private void initializeTiles() {
         for (int y = 0; y < ROWS; y++) {
             for (int x = 0; x < COLS; x++) {
@@ -39,7 +48,13 @@ public class PlayingArea {
         }
     }
 
-    // Get tile at position (x, y) or null if invalid
+    /**
+     * Vráti Tile na pozícii (x, y).
+     *
+     * @param x súradnica x
+     * @param y súradnica y
+     * @return dlaždica na zadaných súradniciach alebo {@code null}
+     */
     public Tile getTile(int x, int y) {
         if (!this.isValidCoordinate(x, y)) {
             return null;
@@ -47,12 +62,18 @@ public class PlayingArea {
         return this.playingArea[y][x];
     }
 
+    /**
+     * Pokúsi sa umiestniť budovu na hernú plochu.
+     *
+     * @param building budova, ktorú sa pokúšame umiestniť
+     * @return true, ak sa budovu podarilo umiestniť, inak false
+     */
     public boolean placeBuilding(Building building) {
         int x = building.getX();
         int y = building.getY();
         int size = building.getSize();
 
-        // Kontrola priestoru
+        // Overenie voľného priestoru
         for (int dy = 0; dy < size; dy++) {
             for (int dx = 0; dx < size; dx++) {
                 int tileX = x + dx;
@@ -64,14 +85,14 @@ public class PlayingArea {
             }
         }
 
-        // Položenie budovy
+        // Nastavenie budovy na pozíciu
         for (int dy = 0; dy < size; dy++) {
             for (int dx = 0; dx < size; dx++) {
                 this.playingArea[y + dy][x + dx].setBuilding(building);
             }
         }
 
-        // 💡 Pridanie budovy do buildingManagera, ak tam ešte nie je
+        // Pridanie budovy do manažéra budov, ak tam ešte nie je
         if (!this.buildingManager.getBuildings().contains(building)) {
             this.buildingManager.addBuilding(building);
         }
@@ -80,28 +101,40 @@ public class PlayingArea {
         return true;
     }
 
-    // Check if coordinates are inside the map boundaries
+    /**
+     * Overí, či sú dané súradnice v rámci rozmerov hracej plochy.
+     *
+     * @param x súradnica X
+     * @param y súradnica Y
+     * @return true, ak sú súradnice platné, inak false
+     */
     public boolean isValidCoordinate(int x, int y) {
         return x >= 0 && y >= 0 && x < COLS && y < ROWS;
     }
 
-    // Save the current playing area as the original village state
+    /**
+     * Uloží aktuálny stav dediny do poľa originalVillage.
+     */
     public void saveVillage() {
         this.originalVillage = this.deepCopyTiles(this.playingArea);
     }
 
-    // Reset playing area to the original saved village state
+    /**
+     * Obnoví hernú plochu do uloženého stavu dediny.
+     */
     public void resetToVillage() {
         if (this.originalVillage != null) {
             this.playingArea = this.deepCopyTiles(this.originalVillage);
         }
     }
 
-    // Restore village state fully after wave failure
+    /**
+     * Obnoví celý stav dediny (dlaždice, budovy a slizy) po neúspešnej vlne.
+     */
     public void restoreVillageState() {
         this.resetToVillage();
 
-        // Clear and rebuild building list from restored tiles
+        // Obnoví zoznam budov podľa aktuálnych dlaždíc
         this.buildingManager.getBuildings().clear();
 
         for (int y = 0; y < this.playingArea.length; y++) {
@@ -116,13 +149,18 @@ public class PlayingArea {
             }
         }
 
-        // Clear all slimes, since wave failed
+        // Vymaže všetkých slimov
         this.buildingManager.getSlimes().clear();
 
         System.out.println("Village state restored after wave failure.");
     }
 
-    // Deep copy of tiles array
+    /**
+     * Vytvorí hlbokú kópiu poľa dlaždíc.
+     *
+     * @param source zdrojové pole
+     * @return nová hlboká kópia poľa
+     */
     private Tile[][] deepCopyTiles(Tile[][] source) {
         Tile[][] copy = new Tile[source.length][source[0].length];
         for (int y = 0; y < source.length; y++) {
@@ -133,15 +171,22 @@ public class PlayingArea {
         return copy;
     }
 
+    /**
+     * Vráti manažéra budov.
+     *
+     * @return inštancia BuildingManager
+     */
     public BuildingManager getBuildingManager() {
         return this.buildingManager;
     }
 
-    public Building getBuildingAt(int x, int y) {
-        return this.getTile(x, y).getBuilding();
-    }
-
-    // Find nearest building to given coords
+    /**
+     * Nájde najbližšiu budovu k zadaným súradniciam.
+     *
+     * @param fromX súradnica X
+     * @param fromY súradnica Y
+     * @return pole s pozíciou [x, y]
+     */
     public int[] findNearestBuilding(int fromX, int fromY) {
         int minDistance = Integer.MAX_VALUE;
         int[] nearest = null;
@@ -162,6 +207,9 @@ public class PlayingArea {
         return nearest;
     }
 
+    /**
+     * Vypíše životy radnice do konzoly (ak sa nájde).
+     */
     public void printTownHallHP() {
         for (int y = 0; y < ROWS; y++) {
             for (int x = 0; x < COLS; x++) {
@@ -169,7 +217,7 @@ public class PlayingArea {
                 if (tile.hasBuilding()) {
                     Building b = tile.getBuilding();
                     if ("Town Hall".equals(b.getName())) {
-                        //System.out.println("Town Hall HP: " + b.getHealth());
+                        System.out.println("Town Hall HP: " + b.getHealth());
                         return;
                     }
                 }
@@ -177,4 +225,5 @@ public class PlayingArea {
         }
         System.out.println("Town Hall nebola nájdená.");
     }
+
 }
