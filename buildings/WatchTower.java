@@ -11,16 +11,8 @@ import java.util.List;
 
 public class WatchTower extends Building {
 
-    private static BufferedImage watchTowerImage;
-
-    static {
-        try {
-            watchTowerImage = ImageIO.read(new File("resources/kys.png"));
-        } catch (IOException e) {
-            System.err.println("Failed to load watchtower image.");
-            watchTowerImage = null;
-        }
-    }
+    private BufferedImage image;
+    private int level;
 
     public WatchTower(PlayingArea map, int x, int y) {
         super("Watch Tower", map, x, y,
@@ -28,11 +20,23 @@ public class WatchTower extends Building {
                 100,
                 3,
                 100,
-                10,
-                40,
-                0.5f,
-                watchTowerImage
+                1000,
+                4000,
+                1f,
+                null  // dočasne null, nastavíme nižšie
         );
+        this.level = 1;
+        loadImage();
+        setImage(this.image);  // predpokladám, že máš setter na zmenu obrázku
+    }
+
+    private void loadImage() {
+        try {
+            this.image = ImageIO.read(new File("resources/wt" + level + ".png"));
+        } catch (IOException e) {
+            System.err.println("Failed to load watchtower image for level " + level);
+            this.image = null;
+        }
     }
 
     @Override
@@ -46,9 +50,15 @@ public class WatchTower extends Building {
         }
 
         for (Slime slime : slimes) {
-            if (this.isInRange(slime)) {
-                slime.takeDamage(this.getDamage());
-                break;
+            if (!slime.isDead()) {
+                boolean inRange = isInRange(slime);
+                System.out.println(getName() + " checking slime at (" + slime.getX() + "," + slime.getY() + "), inRange: " + inRange);
+                if (inRange) {
+                    slime.takeDamage(getDamage());
+                    System.out.println(getName() + " shot slime for " + getDamage() + " damage. Slime HP: " + slime.getHealth());
+                    updateCooldown();
+                    break;
+                }
             }
         }
     }
@@ -86,6 +96,10 @@ public class WatchTower extends Building {
         }
 
         setLevel(getLevel() + 1);
+        this.level = getLevel();
+
+        loadImage();
+        setImage(this.image);
 
         System.out.println(getName() + " upgraded to level " + getLevel());
         return true;

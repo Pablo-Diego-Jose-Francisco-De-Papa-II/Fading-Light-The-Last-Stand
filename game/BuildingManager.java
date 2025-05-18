@@ -38,6 +38,7 @@ public class BuildingManager {
 
         // Buildings attack nearby slimes
         for (Building building : this.buildings) {
+            System.out.println(building.getName());
             building.attack(this.slimes);
         }
     }

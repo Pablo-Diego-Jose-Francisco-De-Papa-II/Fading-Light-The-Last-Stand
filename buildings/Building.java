@@ -148,7 +148,7 @@ public abstract class Building {
             case "Sniper Tower" -> new SniperTower(map, x, y);
             //case "Flamethrower" -> new Flamethrower(map, x, y);
             case "Hellstorm Turret" -> new HellstormTurret(map, x, y);
-            //case "Rocket Silo" -> new RocketSilo(map, x, y);
+            case "Barricade" -> new Barricade(map, x, y);
             default -> null;
         };
     }
@@ -169,20 +169,16 @@ public abstract class Building {
         this.damage = damage;
     }
 
-    public void setRange(int range) {
-        this.range = range;
-    }
-
-    public void setAttackSpeed(float attackSpeed) {
-        this.attackSpeed = attackSpeed;
-    }
-
     public void removeYourself() {
         for (int i = 0; i < this.size; i++) {
             for (int j = 0; j < this.size; j++) {
                 this.map.getTile(this.x + i, this.y + j).removeBuilding();
             }
         }
+    }
+
+    public void setImage(BufferedImage image) {
+        this.image = image;
     }
 
 }

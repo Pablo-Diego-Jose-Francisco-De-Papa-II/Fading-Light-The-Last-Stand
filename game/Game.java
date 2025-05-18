@@ -21,6 +21,8 @@ public class Game {
     private JFrame frame;
     private JLayeredPane layeredPane;
 
+    private boolean waveActive = false;
+
     public Game() {
         frame = new JFrame("Fading Light: The Last Stand");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -72,6 +74,7 @@ public class Game {
     public void switchHUD(String mode) {
         buildHUD.setVisible("build".equals(mode));
         waveHUD.setVisible("wave".equals(mode));
+        waveActive = "wave".equals(mode);  // <-- Update waveActive flag here
         layeredPane.repaint();
         updateHUDs();
     }
@@ -102,7 +105,7 @@ public class Game {
     private void updateGame() {
         buildingManager.update();
         waveManager.update();
-        buildingManager.cleanup();
+        //buildingManager.cleanup();
         gamePanel.repaint();
 
         checkTownHallStatus();
@@ -111,13 +114,13 @@ public class Game {
         updateHUDs();
 
         // If wave finished, reward scrap and switch to build HUD automatically
-        if (waveFinished()) {
+        if (waveActive && waveFinished()) {
             int reward = calculateScrapReward();
             GameState.addScrap(reward);
-            System.out.println("Wave finished! Awarded scrap: " + reward);
+            GameState.nextDay();
             switchHUD("build");
+            waveActive = false;
         }
-
     }
 
     private void updateHUDs() {
@@ -166,9 +169,10 @@ public class Game {
 
     public void startWave() {
         waveManager.startNextWave();
-        GameState.nextDay();   // Increase day in GameState when starting wave
         switchHUD("wave");
+        waveActive = true;
     }
+
 
     private void checkTownHallStatus() {
         Building townHall = buildingManager.getTownHall();

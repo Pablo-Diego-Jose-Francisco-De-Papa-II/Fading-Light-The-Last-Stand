@@ -50,13 +50,12 @@ public class PlayingArea {
         return playingArea;
     }
 
-    // Attempt to place a building on the map; returns true if successful
     public boolean placeBuilding(Building building) {
         int x = building.getX();
         int y = building.getY();
         int size = building.getSize();
 
-        // Check if all tiles in the building area are walkable and valid
+        // Kontrola priestoru
         for (int dy = 0; dy < size; dy++) {
             for (int dx = 0; dx < size; dx++) {
                 int tileX = x + dx;
@@ -68,11 +67,16 @@ public class PlayingArea {
             }
         }
 
-        // Place the building on all tiles in the area
+        // Položenie budovy
         for (int dy = 0; dy < size; dy++) {
             for (int dx = 0; dx < size; dx++) {
                 playingArea[y + dy][x + dx].setBuilding(building);
             }
+        }
+
+        // 💡 Pridanie budovy do buildingManagera, ak tam ešte nie je
+        if (!buildingManager.getBuildings().contains(building)) {
+            buildingManager.addBuilding(building);
         }
 
         System.out.println("Building placed at " + x + "," + y);
@@ -217,7 +221,7 @@ public class PlayingArea {
                 if (tile.hasBuilding()) {
                     Building b = tile.getBuilding();
                     if ("Town Hall".equals(b.getName())) {
-                        System.out.println("Town Hall HP: " + b.getHealth());
+                        //System.out.println("Town Hall HP: " + b.getHealth());
                         return;
                     }
                 }

@@ -26,7 +26,7 @@ public class Shop extends JPanel {
         addBuyButton("Sniper Tower", 250);
         addBuyButton("Flamethrower", 300);
         addBuyButton("Hellstorm Turret", 400);
-        addBuyButton("Rocket Silo", 500);
+        addBuyButton("Barricade", 5);
     }
 
     private void addBuyButton(String name, int cost) {

@@ -181,4 +181,5 @@ public class WaveManager {
     public int getNextSlimeIndex() {
         return this.nextSlimeIndex;
     }
+
 }
