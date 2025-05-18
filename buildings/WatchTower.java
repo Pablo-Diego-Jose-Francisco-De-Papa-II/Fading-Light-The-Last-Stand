@@ -9,11 +9,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Trieda WatchTower reprezentuje obrannú budovu – Watch tower,
+ * ktorá útočí na nepriateľov v určitom dosahu.
+ */
 public class WatchTower extends Building {
 
     private BufferedImage image;
     private int level;
 
+    /**
+     * Vytvorí novú WatchTower na zadaných súradniciach na hracej ploche.
+     *
+     * @param map referencia na hraciu plochu
+     * @param x   súradnica X
+     * @param y   súradnica Y
+     */
     public WatchTower(PlayingArea map, int x, int y) {
         super("Watch Tower", map, x, y,
                 6,
@@ -30,6 +41,9 @@ public class WatchTower extends Building {
         setImage(this.image);
     }
 
+    /**
+     * Načíta obrázok pre aktuálnu úroveň veže z disku.
+     */
     private void loadImage() {
         try {
             this.image = ImageIO.read(new File("resources/wt" + this.level + ".png"));
@@ -39,6 +53,12 @@ public class WatchTower extends Building {
         }
     }
 
+    /**
+     * Útok na nepriateľov v dosahu. Vyberie prvého živého nepriateľa a spôsobí mu poškodenie.
+     * Metóda nič nevykoná, ak je veža zničená alebo čaká na cooldown.
+     *
+     * @param slimes zoznam nepriateľov, na ktorých sa môže útočiť
+     */
     @Override
     public void attack(List<Slime> slimes) {
         if (isDestroyed()) {
@@ -61,6 +81,12 @@ public class WatchTower extends Building {
         }
     }
 
+    /**
+     * Overí, či je daný nepriateľ v dosahu.
+     *
+     * @param slime nepriateľ, ktorého pozícia sa overuje
+     * @return true, ak je nepriateľ v dosahu, inak false
+     */
     private boolean isInRange(Slime slime) {
         int zx = slime.getX();
         int zy = slime.getY();
@@ -73,6 +99,11 @@ public class WatchTower extends Building {
         return (dx * dx + dy * dy) <= (getRange() * getRange());
     }
 
+    /**
+     * Vylepší vežu na vyššiu úroveň, ak ešte nedosiahla maximum.
+     *
+     * @return true, ak bolo vylepšenie úspešné, inak false
+     */
     @Override
     public boolean upgrade() {
         if (getLevel() >= 3) {
@@ -103,6 +134,12 @@ public class WatchTower extends Building {
         return true;
     }
 
+
+    /**
+     * Získa cenu za vylepšenie veže podľa jej aktuálnej úrovne.
+     *
+     * @return cena za upgrade, alebo 0, ak je už na maximálnej úrovni
+     */
     @Override
     public int getUpgradeCost() {
         return switch (getLevel()) {

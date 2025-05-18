@@ -13,7 +13,17 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Image;
 
+/**
+ * Trieda Menu predstavuje hlavné menu hry.
+ * Zobrazuje titul, pozadie a tlačidlá pre spustenie novej hry, načítanie hry,
+ * zobrazenie survival guide a ukončenie aplikácie.
+ */
 public class Menu {
+
+    /**
+     * Vytvorí a zobrazí GUI hlavného menu hry.
+     * Nastaví okno, pozadie, titul a tlačidlá s ich akciami.
+     */
     public void setUpGUI() {
         JFrame frame = new JFrame("Fading Light: The Last Stand");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -22,7 +32,7 @@ public class Menu {
         frame.setResizable(false);
         frame.setLayout(null);
 
-        // Icon image
+        // Ikona hry
         Image iconImage = new  ImageIcon("resources/FadingLight-icon.png").getImage();
         frame.setIconImage(iconImage);
 
@@ -30,7 +40,7 @@ public class Menu {
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setPreferredSize(new Dimension(860, 540));
 
-        // Background image
+        // Pozadie
         ImageIcon backgroundImage = new ImageIcon("resources/FL_Background_img.png");
         Image background = backgroundImage.getImage().getScaledInstance(860, 540, Image.SCALE_SMOOTH);
         backgroundImage = new ImageIcon(background);
@@ -38,7 +48,7 @@ public class Menu {
         backgroundLabel.setBounds(0, 0, 860, 540);
         layeredPane.add(backgroundLabel, JLayeredPane.DEFAULT_LAYER);
 
-        // Title name
+        // Názov hry
         JLabel titleLabel = new JLabel("Fading Light");
         titleLabel.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 40));
         titleLabel.setForeground(Color.WHITE);
@@ -84,6 +94,13 @@ public class Menu {
         quitButton.addActionListener(e -> System.exit(0));
     }
 
+    /**
+     * Vytvorí tlačidlo.
+     *
+     * @param text text tlačidla
+     * @param y vertikálna pozícia tlačidla v okne
+     * @return tlačidlo s nastaveným štýlom a pozíciou
+     */
     private static JButton createButton(String text, int y) {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.BOLD, 15));

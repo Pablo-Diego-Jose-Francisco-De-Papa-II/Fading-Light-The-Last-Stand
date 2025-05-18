@@ -9,11 +9,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Trieda SniperTower reprezentuje obrannú budovu - Sniper tower,
+ * ktorá slúži ako obranná budova pre nepriateľov a útoči na nich.
+ */
 public class SniperTower extends Building {
 
     private BufferedImage sniperTowerImage;
     private int level;
 
+    /**
+     * Vytvorí novú inštanciu SniperTower turretu na určených súradniciach mapy.
+     *
+     * @param map referencie na hraciu plochu, kde je umiestnená
+     * @param x súradnica X
+     * @param y súradnica Y
+     */
     public SniperTower(PlayingArea map, int x, int y) {
         super("Sniper Tower", map, x, y,
                 6,
@@ -30,6 +41,9 @@ public class SniperTower extends Building {
         setImage(this.sniperTowerImage);
     }
 
+    /**
+     * Načíta obrázok pre aktuálnu úroveň z disku.
+     */
     private void loadImage() {
         try {
             this.sniperTowerImage = ImageIO.read(new File("resources/sni" + this.level + ".png"));
@@ -39,6 +53,12 @@ public class SniperTower extends Building {
         }
     }
 
+    /**
+     * Útok na nepriateľov v dosahu. Vyberie prvého živého nepriateľa a spôsobí mu poškodenie.
+     * Metóda nič nevykoná, ak je veža zničená alebo čaká na cooldown.
+     *
+     * @param slimes zoznam nepriateľov, na ktorých sa môže útočiť
+     */
     @Override
     public void attack(List<Slime> slimes) {
         if (isDestroyed()) {
@@ -57,6 +77,12 @@ public class SniperTower extends Building {
         }
     }
 
+    /**
+     * Overí, či je daný nepriateľ v dosahu.
+     *
+     * @param slime nepriateľ, ktorého pozícia sa overuje
+     * @return true, ak je nepriateľ v dosahu, inak false
+     */
     private boolean isInRange(Slime slime) {
         int zx = slime.getX();
         int zy = slime.getY();
@@ -69,6 +95,12 @@ public class SniperTower extends Building {
         return (dx * dx + dy * dy) <= (getRange() * getRange());
     }
 
+    /**
+     * Vylepšenie na vyššiu úroveň, ak ešte nedosiahla maximum.
+     * Zvyšuje životy a poškodenie.
+     *
+     * @return true, ak bolo vylepšenie úspešné, inak false
+     */
     @Override
     public boolean upgrade() {
         if (getLevel() >= 3) {
@@ -99,6 +131,11 @@ public class SniperTower extends Building {
         return true;
     }
 
+    /**
+     * Získa cenu za vylepšenie podľa jej aktuálnej úrovne.
+     *
+     * @return cena za upgrade, alebo 0, ak je už na maximálnej úrovni
+     */
     @Override
     public int getUpgradeCost() {
         return switch (getLevel()) {

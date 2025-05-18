@@ -9,6 +9,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Trieda Barricade reprezentuje obrannú budovu - barikádu,
+ * ktorá slúži ako prekážka pre nepriateľov, ale sama neútočí.
+ */
 public class Barricade extends Building {
 
     private static BufferedImage barricadeImage;
@@ -22,6 +26,13 @@ public class Barricade extends Building {
         }
     }
 
+    /**
+     * Vytvorí novú inštanciu barikády na určených súradniciach mapy.
+     *
+     * @param map referencie na hraciu plochu, kde je barikáda umiestnená
+     * @param x súradnica X
+     * @param y súradnica Y
+     */
     public Barricade(PlayingArea map, int x, int y) {
         super("Barricade", map, x, y,
                 1,
@@ -35,15 +46,30 @@ public class Barricade extends Building {
         );
     }
 
+    /**
+     * Barikáda nemá žiadnu útočnú funkciu.
+     *
+     * @param slimes zoznam nepriateľov v dosahu
+     */
     @Override
     public void attack(List<Slime> slimes) {
     }
 
+    /**
+     * Barikádu nie je možné vylepšiť.
+     *
+     * @return false
+     */
     @Override
     public boolean upgrade() {
         return false;
     }
 
+    /**
+     * Cena na vylepšenie barikády.
+     *
+     * @return 0
+     */
     @Override
     public int getUpgradeCost() {
         return 0;

@@ -8,6 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
+/**
+ * Trieda reprezentujúca jeden tile na hernej mape.
+ * Dlaždica môže obsahovať budovu, môže byť priechodná alebo nepriechodná
+ * a má svoju vizuálnu reprezentáciu pomocou obrázku.
+ */
 public class Tile {
 
     private static final Random RANDOM = new Random();
@@ -19,6 +24,13 @@ public class Tile {
     private Building building;
     private final BufferedImage image;
 
+    /**
+     * Vytvorí novú dlaždicu na zadaných súradniciach, ktorá je štandardne priechodná
+     * a neobsahuje žiadnu budovu. Obrázok sa náhodne vyberie zo základného obrázka.
+     *
+     * @param x X-ová súradnica dlaždice
+     * @param y Y-ová súradnica dlaždice
+     */
     public Tile(int x, int y) {
         this.x = x;
         this.y = y;
@@ -27,6 +39,11 @@ public class Tile {
         this.image = getRandomSubImage();
     }
 
+    /**
+     * Vytvorí kópiu existujúcej dlaždice (klon).
+     *
+     * @param other dlaždica, z ktorej sa preberajú hodnoty
+     */
     public Tile(Tile other) {
         this.x = other.x;
         this.y = other.y;
@@ -35,7 +52,11 @@ public class Tile {
         this.building = other.building;
     }
 
-
+    /**
+     * Načíta základný obrázok podlahy z disku.
+     *
+     * @return načítaný obrázok
+     */
     private static BufferedImage loadImage() {
         try {
             return ImageIO.read(new File("resources/floor.png"));
@@ -44,26 +65,38 @@ public class Tile {
         }
     }
 
+    /**
+     * Získa náhodný výrez zo základného obrázka podlahy.
+     *
+     * @return Náhodne orezaný obrázok
+     */
     private static BufferedImage getRandomSubImage() {
         return Tile.DEFAULT_IMAGE.getSubimage(RANDOM.nextInt(41), RANDOM.nextInt(41), 10, 10);
     }
 
-    public int[] getPosition() {
-        return new int[]{this.x, this.y};
-    }
-
+    /**
+     * Zistí, či je dlaždica priechodná.
+     *
+     * @return true, ak je priechodná, inak false
+     */
     public boolean isWalkable() {
         return this.isWalkable;
     }
 
-    public void setWalkable(boolean walkable) {
-        this.isWalkable = walkable;
-    }
-
+    /**
+     * Vráti budovu, ktorá sa nachádza na tejto dlaždici.
+     *
+     * @return Objekt Building
+     */
     public Building getBuilding() {
         return this.building;
     }
 
+    /**
+     * Nastaví budovu na túto dlaždicu. Dlaždica sa stane nepriechodnou.
+     *
+     * @param building Budova, ktorú má dlaždica obsahovať
+     */
     public void setBuilding(Building building) {
         this.building = building;
 
@@ -72,24 +105,28 @@ public class Tile {
         }
     }
 
+    /**
+     * Odstráni budovu z tejto dlaždice a nastaví ju ako priechodnú.
+     */
     public void removeBuilding() {
         this.building = null;
         this.isWalkable = true;
     }
 
+    /**
+     * Vráti obrázok spojený s touto dlaždicou.
+     *
+     * @return BufferedImage reprezentujúci tile
+     */
     public BufferedImage getImage() {
         return this.image;
     }
 
-    public void damageBuilding(int amount) {
-        if (this.building != null) {
-            this.building.takeDamage(amount);
-            if (this.building.getHealth() <= 0) {
-                this.removeBuilding();
-            }
-        }
-    }
-
+    /**
+     * Zistí, či dlaždica obsahuje budovu.
+     *
+     * @return true, ak obsahuje budovu, inak false
+     */
     public boolean hasBuilding() {
         return this.building != null;
     }

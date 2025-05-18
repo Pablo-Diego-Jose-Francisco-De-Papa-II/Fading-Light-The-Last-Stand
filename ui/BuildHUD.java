@@ -72,7 +72,7 @@ public class BuildHUD extends AbstractHUD {
 
         this.removeButton.addActionListener(e -> {
             if (this.selectedBuilding != null) {
-                this.selectedBuilding.removeYourself();
+                this.selectedBuilding.removeBuidingFromMap();
                 this.selectedBuilding = null;
                 this.hideUpgradeRemoveButtons();
                 repaint();

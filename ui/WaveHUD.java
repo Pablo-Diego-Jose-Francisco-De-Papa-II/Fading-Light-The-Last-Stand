@@ -7,17 +7,27 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import java.awt.Font;
-import java.awt.event.ActionListener;
 
+/**
+ * Trieda WaveHUD reprezentuje herné HUD počas vĺn nepriateľov.
+ * Obsahuje tlačidlá na ovládanie hry a zobrazovanie informácií
+ * ako čas a počet zostávajúcich nepriateľov.
+ */
 public class WaveHUD extends AbstractHUD {
 
-    private final JButton pauseButton;
+    private final JButton normalSpeedButton;
     private final JButton fastForwardButton;
     private final JButton fastFastForwardButton;
     private final JButton giveUpButton;
     private final JLabel timeLabel;
     private final JLabel enemiesLeftLabel;
 
+    /**
+     * Konštruktor vytvára WaveHUD a inicializuje všetky komponenty.
+     * Nastavuje pozície, štýly a pridáva akcie buttons.
+     *
+     * @param game referencia na hernú logiku pre ovládanie rýchlosti a prepínanie HUD
+     */
     public WaveHUD(Game game) {
         super();
 
@@ -30,34 +40,35 @@ public class WaveHUD extends AbstractHUD {
         enemiesLeftLabel1.setBounds(10, -10, 250, 90);
         add(enemiesLeftLabel1);
 
-        // Time label centered at top middle
+        // Časovač
         this.timeLabel = new JLabel("00:00");
         this.timeLabel.setFont(new Font("Arial", Font.BOLD, 30));
         this.timeLabel.setBounds(590, 10, 100, 50);
         add(this.timeLabel);
 
-        // Pause button bottom right-ish
-        this.pauseButton = new JButton(">");
-        this.pauseButton.setBounds(1070, 660, 55, 50);
-        this.pauseButton.setFont(new Font("Arial", Font.BOLD, 11));
-        add(this.pauseButton);
+        // Normálna rýchlosť
+        this.normalSpeedButton = new JButton(">");
+        this.normalSpeedButton.setBounds(1070, 660, 55, 50);
+        this.normalSpeedButton.setFont(new Font("Arial", Font.BOLD, 11));
+        add(this.normalSpeedButton);
 
-        // Fast forward buttons next to pause
+        // Rýchlejšie
         this.fastForwardButton = new JButton(">>");
         this.fastForwardButton.setBounds(1135, 660, 55, 50);
         this.fastForwardButton.setFont(new Font("Arial", Font.BOLD, 11));
         add(this.fastForwardButton);
 
+        // Najrýchlejšie
         this.fastFastForwardButton = new JButton(">>>");
         this.fastFastForwardButton.setBounds(1200, 660, 55, 50);
         this.fastFastForwardButton.setFont(new Font("Arial", Font.BOLD, 11));
         add(this.fastFastForwardButton);
 
-        this.pauseButton.addActionListener(e -> game.setGameLoopDelay(500));
+        this.normalSpeedButton.addActionListener(e -> game.setGameLoopDelay(500));
         this.fastForwardButton.addActionListener(e -> game.setGameLoopDelay(200));
         this.fastFastForwardButton.addActionListener(e -> game.setGameLoopDelay(50));
 
-        // Give up button bottom left
+        // Give up button
         this.giveUpButton = new JButton("GIVE UP");
         this.giveUpButton.setBounds(10, 660, 150, 50);
         this.giveUpButton.setFont(new Font("Arial", Font.BOLD, 27));
@@ -68,34 +79,22 @@ public class WaveHUD extends AbstractHUD {
         });
     }
 
-    // Method to update time
+    /**
+     * Aktualizuje zobrazovaný čas v HUD.
+     *
+     * @param time reťazec predstavujúci aktuálny čas
+     */
     public void updateTime(String time) {
         this.timeLabel.setText(time);
     }
 
+    /**
+     * Aktualizuje počet zostávajúcich nepriateľov (bodov).
+     *
+     * @param count počet zostávajúcich nepriateľov
+     */
     public void updateEnemiesLeft(int count) {
         this.enemiesLeftLabel.setText("Points left: " + count);
     }
 
-    // Getters for buttons to allow adding listeners externally
-    public JButton getPauseButton() {
-        return this.pauseButton;
-    }
-
-    public JButton getFastForwardButton() {
-        return this.fastForwardButton;
-    }
-
-    public JButton getFastFastForwardButton() {
-        return this.fastFastForwardButton;
-    }
-
-    public JButton getGiveUpButton() {
-        return this.giveUpButton;
-    }
-
-    // Example method to add action listener for give up button (to switch HUD)
-    public void addGiveUpListener(ActionListener listener) {
-        this.giveUpButton.addActionListener(listener);
-    }
 }

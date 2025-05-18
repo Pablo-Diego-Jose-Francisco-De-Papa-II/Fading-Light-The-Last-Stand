@@ -3,10 +3,18 @@ package events;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Správca herných eventov, ktorý rozhoduje, ktoré eventy sa majú aktivovať v daný deň.
+ */
 public class EventManager {
 
     private List<Event> activeEvents = new ArrayList<>();
 
+    /**
+     * Skontroluje aktuálny deň a na základe pravidiel spustí príslušné eventy.
+     *
+     * @param day aktuálny deň v hre
+     */
     public void checkAndStartEvent(int day) {
         this.activeEvents.clear();
 
@@ -31,9 +39,11 @@ public class EventManager {
             fog.startEvent();
             this.activeEvents.add(fog);
         }
-
     }
 
+    /**
+     * Ukončí všetky momentálne aktívne eventy.
+     */
     public void endCurrentEvents() {
         for (Event event : this.activeEvents) {
             if (event.isActive()) {
@@ -44,6 +54,11 @@ public class EventManager {
         this.activeEvents.clear();
     }
 
+    /**
+     * Vráti zoznam názvov všetkých aktívnych eventov.
+     *
+     * @return zoznam názvov aktívnych eventov
+     */
     public List<String> getActiveEventNames() {
         List<String> names = new ArrayList<>();
         for (Event event : this.activeEvents) {
@@ -54,8 +69,12 @@ public class EventManager {
         return names;
     }
 
+    /**
+     * Zistí, či sú momentálne aktívne nejaké eventy.
+     *
+     * @return true, ak existujú aktívne eventy, inak false
+     */
     public boolean hasActiveEvents() {
         return !this.activeEvents.isEmpty();
     }
-
 }
