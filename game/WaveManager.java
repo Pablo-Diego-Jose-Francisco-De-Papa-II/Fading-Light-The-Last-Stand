@@ -16,49 +16,92 @@ public class WaveManager {
     private double wavePoints = 100;
     private final double SCALING_FACTOR = 1.4;
 
-    private final Map<String, SlimeType> slimeTypes = new HashMap<>();
+    private double currentWavePoints; // stores wave points at the start of the current wave
+
+    private final Map<String, int[]> slimeTypes = new HashMap<>();
+
+    private final List<String> slimesToSpawn = new ArrayList<>();
+    private int nextSlimeIndex = 0;
+    private long nextSpawnTime = 0;
+
+    private double remainingWavePoints;
 
     public WaveManager(PlayingArea playingArea) {
         this.playingArea = playingArea;
         this.slimes = new ArrayList<>();
         this.random = new Random();
 
-        // Nastavenie typov slimes
-        slimeTypes.put("Goob", new SlimeType(20, 1));
-        slimeTypes.put("FastGoob", new SlimeType(30, 2));
-        slimeTypes.put("Goobster", new SlimeType(45, 3));
-        slimeTypes.put("Goobmassa", new SlimeType(60, 4));
-        slimeTypes.put("Goober", new SlimeType(90, 5));
+        this.slimeTypes.put("Goob", new int[]{20, 1});
+        this.slimeTypes.put("FastGoob", new int[]{30, 2});
+        this.slimeTypes.put("Goobster", new int[]{45, 3});
+        this.slimeTypes.put("Goobmassa", new int[]{60, 4});
+        this.slimeTypes.put("Goober", new int[]{90, 5});
+
+        this.remainingWavePoints = 0;
     }
 
     public void startNextWave() {
-        System.out.println("🌙 Starting Day " + day + " with " + (int) wavePoints + " wave points");
+        System.out.println("🌙 Starting Day " + this.day + " with " + this.wavePoints + " wave points");
 
-        double budget = wavePoints;
-        List<String> availableTypes = getAvailableSlimeTypes();
+        this.currentWavePoints = this.wavePoints;  // Store current wave points before scaling
 
-        while (budget >= getMinSlimeCost(availableTypes)) {
-            String selectedType = availableTypes.get(random.nextInt(availableTypes.size()));
-            SlimeType typeInfo = slimeTypes.get(selectedType);
+        double budget = this.wavePoints;
+        List<String> availableTypes = this.getAvailableSlimeTypes();
 
-            if (typeInfo.cost <= budget) {
-                Slime slime = spawnSlimeByType(selectedType);
-                if (slime != null) {
-                    slimes.add(slime);
-                    budget -= typeInfo.cost;
-                    System.out.println("Spawned " + selectedType + " (" + typeInfo.cost + " pts). Remaining: " + (int) budget);
-                }
+        this.slimesToSpawn.clear();
+        this.nextSlimeIndex = 0;
+
+        while (budget >= this.getMinSlimeCost(availableTypes)) {
+            String selectedType = availableTypes.get(this.random.nextInt(availableTypes.size()));
+            int cost = this.slimeTypes.get(selectedType)[0];
+
+            if (cost <= budget) {
+                this.slimesToSpawn.add(selectedType);
+                budget -= cost;
             }
         }
 
-        day++;
-        wavePoints *= SCALING_FACTOR;
+        this.remainingWavePoints = budget; // leftover budget after spawning
+
+        this.nextSpawnTime = System.currentTimeMillis() + this.random.nextInt(1001);
+
+        this.day++;
+        this.wavePoints *= this.SCALING_FACTOR;
+    }
+
+    public double getRemainingWavePoints() {
+        return this.remainingWavePoints;
+    }
+
+    // New getter for current wave points (optional if you want to expose it)
+    public double getCurrentWavePoints() {
+        return this.currentWavePoints;
+    }
+
+    public void update() {
+        long currentTime = System.currentTimeMillis();
+
+        if (this.nextSlimeIndex < this.slimesToSpawn.size() && currentTime >= this.nextSpawnTime) {
+            String slimeType = this.slimesToSpawn.get(this.nextSlimeIndex);
+            Slime slime = this.spawnSlimeByType(slimeType);
+            if (slime != null) {
+                this.slimes.add(slime);
+                System.out.println("Spawned " + slimeType);
+            }
+            this.nextSlimeIndex++;
+            this.nextSpawnTime = currentTime + this.random.nextInt(1001);
+        }
+
+        for (Slime slime : this.slimes) {
+            slime.update();
+        }
+        this.slimes.removeIf(Slime::isDead);
     }
 
     private List<String> getAvailableSlimeTypes() {
         List<String> list = new ArrayList<>();
-        for (Map.Entry<String, SlimeType> entry : slimeTypes.entrySet()) {
-            if (entry.getValue().minWave <= day) {
+        for (Map.Entry<String, int[]> entry : this.slimeTypes.entrySet()) {
+            if (entry.getValue()[1] <= this.day) {
                 list.add(entry.getKey());
             }
         }
@@ -68,59 +111,74 @@ public class WaveManager {
     private int getMinSlimeCost(List<String> types) {
         int min = Integer.MAX_VALUE;
         for (String type : types) {
-            min = Math.min(min, slimeTypes.get(type).cost);
+            min = Math.min(min, this.slimeTypes.get(type)[0]);
         }
         return min;
     }
 
     private Slime spawnSlimeByType(String type) {
-        int x = 0, y = 0;
-        int edge = random.nextInt(4);
+        int x = 0;
+        int y = 0;
+        int edge = this.random.nextInt(4);
 
         switch (edge) {
-            case 0 -> { x = 0; y = random.nextInt(ROWS); }
-            case 1 -> { x = COLS - 1; y = random.nextInt(ROWS); }
-            case 2 -> { x = random.nextInt(COLS); y = 0; }
-            case 3 -> { x = random.nextInt(COLS); y = ROWS - 1; }
+            case 0 -> {
+                x = 0;
+                y = this.random.nextInt(ROWS);
+            }
+            case 1 -> {
+                x = COLS - 1;
+                y = this.random.nextInt(ROWS);
+            }
+            case 2 -> {
+                x = this.random.nextInt(COLS);
+                y = 0;
+            }
+            case 3 -> {
+                x = this.random.nextInt(COLS);
+                y = ROWS - 1;
+            }
         }
 
-        if (!isValidTile(x, y)) return null;
+        if (!this.isValidTile(x, y)) {
+            return null;
+        }
 
         return switch (type) {
-            case "Goob" -> new Goob(playingArea, x, y);
-            case "FastGoob" -> new FastGoob(playingArea, x, y);
-            case "Goobster" -> new Goobster(playingArea, x, y);
-            case "Goobmassa" -> new Goobmass(playingArea, x, y);
-            case "Goober" -> new Goober(playingArea, x, y);
+            case "Goob" -> new Goob(this.playingArea, x, y);
+            case "FastGoob" -> new FastGoob(this.playingArea, x, y);
+            case "Goobster" -> new Goobster(this.playingArea, x, y);
+            case "Goobmassa" -> new Goobmass(this.playingArea, x, y);
+            case "Goober" -> new Goober(this.playingArea, x, y);
             default -> null;
         };
     }
 
     private boolean isValidTile(int x, int y) {
-        if (x < 0 || y < 0 || x >= COLS || y >= ROWS) return false;
-        Tile tile = playingArea.getTile(x, y);
+        if (x < 0 || y < 0 || x >= COLS || y >= ROWS) {
+            return false;
+        }
+        Tile tile = this.playingArea.getTile(x, y);
         return tile != null && tile.isWalkable();
     }
 
     public List<Slime> getSlimes() {
-        return slimes;
+        return this.slimes;
     }
 
-    public void update() {
-        for (Slime slime : slimes) {
-            slime.update();
-        }
-        slimes.removeIf(Slime::isDead);
+    public int getDay() {
+        return this.day;
     }
 
-    // 💡 Pomocná trieda pre popis typu slima
-    private static class SlimeType {
-        int cost;
-        int minWave;
+    public List<String> getSlimesToSpawn() {
+        return this.slimesToSpawn;
+    }
 
-        SlimeType(int cost, int minWave) {
-            this.cost = cost;
-            this.minWave = minWave;
-        }
+    public Map<String, int[]> getSlimeTypes() {
+        return this.slimeTypes;
+    }
+
+    public int getNextSlimeIndex() {
+        return this.nextSlimeIndex;
     }
 }

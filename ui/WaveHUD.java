@@ -18,8 +18,6 @@ public class WaveHUD extends AbstractHUD {
     public WaveHUD(Game game) {
         super();
 
-        ImageIcon enemiesIcon = new ImageIcon("resources/slime_bg.png");
-
         this.enemiesLeftLabel = new JLabel("Points left: 0");
         this.enemiesLeftLabel.setBounds(90, -10, 250, 90);
         this.enemiesLeftLabel.setFont(new Font("Arial", Font.BOLD, 20));
@@ -53,13 +51,17 @@ public class WaveHUD extends AbstractHUD {
         this.fastFastForwardButton.setFont(new Font("Arial", Font.BOLD, 11));
         add(this.fastFastForwardButton);
 
+        this.pauseButton.addActionListener(e -> game.setGameLoopDelay(500));
+        this.fastForwardButton.addActionListener(e -> game.setGameLoopDelay(200));
+        this.fastFastForwardButton.addActionListener(e -> game.setGameLoopDelay(50));
+
         // Give up button bottom left
         this.giveUpButton = new JButton("GIVE UP");
         this.giveUpButton.setBounds(10, 660, 150, 50);
         this.giveUpButton.setFont(new Font("Arial", Font.BOLD, 27));
         add(this.giveUpButton);
 
-        giveUpButton.addActionListener(e -> {
+        this.giveUpButton.addActionListener(e -> {
             game.switchHUD("build");
         });
     }
@@ -75,23 +77,23 @@ public class WaveHUD extends AbstractHUD {
 
     // Getters for buttons to allow adding listeners externally
     public JButton getPauseButton() {
-        return pauseButton;
+        return this.pauseButton;
     }
 
     public JButton getFastForwardButton() {
-        return fastForwardButton;
+        return this.fastForwardButton;
     }
 
     public JButton getFastFastForwardButton() {
-        return fastFastForwardButton;
+        return this.fastFastForwardButton;
     }
 
     public JButton getGiveUpButton() {
-        return giveUpButton;
+        return this.giveUpButton;
     }
 
     // Example method to add action listener for give up button (to switch HUD)
     public void addGiveUpListener(ActionListener listener) {
-        giveUpButton.addActionListener(listener);
+        this.giveUpButton.addActionListener(listener);
     }
 }

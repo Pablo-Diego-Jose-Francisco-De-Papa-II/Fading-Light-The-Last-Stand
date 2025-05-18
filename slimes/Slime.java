@@ -134,4 +134,5 @@ public abstract class Slime {
     public String getIcon() {
         return this.icon;
     }
+
 }

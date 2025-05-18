@@ -213,7 +213,7 @@ public class PlayingArea {
     public void printTownHallHP() {
         for (int y = 0; y < ROWS; y++) {
             for (int x = 0; x < COLS; x++) {
-                Tile tile = playingArea[y][x];
+                Tile tile = this.playingArea[y][x];
                 if (tile.hasBuilding()) {
                     Building b = tile.getBuilding();
                     if ("Town Hall".equals(b.getName())) {

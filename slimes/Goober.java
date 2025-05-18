@@ -9,7 +9,7 @@ public class Goober extends Slime {
                 1,
                 32,
                 1,
-                0,
+                1000,
                 1,
                 30,
                 "resources/floor.png");

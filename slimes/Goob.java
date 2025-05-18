@@ -9,7 +9,7 @@ public class Goob extends Slime {
                 1,
                 32,
                 1,
-                0,
+                100,
                 1,
                 30,
                 "resources/floor.png");

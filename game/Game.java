@@ -14,7 +14,9 @@ public class Game {
     private final PlayingArea playingArea;
     private final GamePanel gamePanel;
     private final BuildingManager buildingManager;
-    private final WaveManager waveManager; // ✅ PRIDANÉ
+    private final WaveManager waveManager;
+
+    private Timer gameLoopTimer;
 
     private JFrame frame;
     private JLayeredPane layeredPane;
@@ -31,8 +33,8 @@ public class Game {
 
         this.playingArea = new PlayingArea();
         this.buildingManager = playingArea.getBuildingManager();
-        this.waveManager = new WaveManager(playingArea); // ✅ PRIDANÉ
-        this.buildHUD = new BuildHUD(this.playingArea, this); // ✅ buildHUD teraz dostane aj this
+        this.waveManager = new WaveManager(playingArea);
+        this.buildHUD = new BuildHUD(this.playingArea, this);
         this.waveHUD = new WaveHUD(this);
         this.gamePanel = new GamePanel(this.playingArea, this);
 
@@ -55,6 +57,7 @@ public class Game {
         frame.setVisible(true);
 
         switchHUD("build");
+        updateHUDs(); // Update HUD values initially
         startGameLoop();
     }
 
@@ -62,10 +65,15 @@ public class Game {
         buildingManager.addBuilding(building);
     }
 
+    /**
+     * Switches visibility between build and wave HUD.
+     * @param mode "build" or "wave"
+     */
     public void switchHUD(String mode) {
         buildHUD.setVisible("build".equals(mode));
         waveHUD.setVisible("wave".equals(mode));
         layeredPane.repaint();
+        updateHUDs();
     }
 
     public PlayingArea getPlayingArea() {
@@ -76,13 +84,19 @@ public class Game {
         return buildingManager;
     }
 
-    public WaveManager getWaveManager() { // ✅ GETTER
+    public WaveManager getWaveManager() {
         return waveManager;
     }
 
     private void startGameLoop() {
-        Timer timer = new Timer(500, e -> updateGame());
-        timer.start();
+        gameLoopTimer = new Timer(500, e -> updateGame());
+        gameLoopTimer.start();
+    }
+
+    public void setGameLoopDelay(int delayMillis) {
+        if (gameLoopTimer != null) {
+            gameLoopTimer.setDelay(delayMillis);
+        }
     }
 
     private void updateGame() {
@@ -92,8 +106,55 @@ public class Game {
         gamePanel.repaint();
 
         checkTownHallStatus();
+
+        // Update HUD values every tick
+        updateHUDs();
+
+        // If wave finished, reward scrap and switch to build HUD automatically
+        if (waveFinished()) {
+            int reward = calculateScrapReward();
+            GameState.addScrap(reward);
+            System.out.println("Wave finished! Awarded scrap: " + reward);
+            switchHUD("build");
+        }
+
     }
 
+    private void updateHUDs() {
+        int day = GameState.getDayCount();
+        int enemiesLeft = calculateEnemiesLeft();
+        int scrap = GameState.getScrap();
+
+        // Update build HUD
+        buildHUD.updateDay(day);
+        buildHUD.updateScrap(scrap);
+
+        // Update wave HUD
+        waveHUD.updateDay(day);
+        waveHUD.updateScrap(scrap);
+        waveHUD.updateEnemiesLeft(enemiesLeft);
+    }
+
+    private int calculateEnemiesLeft() {
+        // You can customize this if waveManager has appropriate getters
+        int remainingPoints = 0;
+        if (waveManager != null) {
+            remainingPoints = (int) waveManager.getRemainingWavePoints();
+        }
+        return remainingPoints;
+    }
+
+    private boolean waveFinished() {
+        // A wave is finished if no slimes remain and no more to spawn
+        return waveManager.getSlimes().isEmpty() &&
+                waveManager.getNextSlimeIndex() >= waveManager.getSlimesToSpawn().size();
+    }
+
+    private int calculateScrapReward() {
+        double pointsSpent = waveManager.getCurrentWavePoints() - waveManager.getRemainingWavePoints();
+        if (pointsSpent < 0) pointsSpent = 0;
+        return (int) pointsSpent; // 1 point = 1 scrap
+    }
 
     public BuildHUD getBuildHUD() {
         return buildHUD;
@@ -105,6 +166,8 @@ public class Game {
 
     public void startWave() {
         waveManager.startNextWave();
+        GameState.nextDay();   // Increase day in GameState when starting wave
+        switchHUD("wave");
     }
 
     private void checkTownHallStatus() {
@@ -113,12 +176,11 @@ public class Game {
         if (townHall == null || townHall.isDestroyed()) {
             System.out.println("Town Hall destroyed! Ending wave and returning to build mode.");
 
-            // Vyčisti nepriateľov
+            // Clear all enemies
             waveManager.getSlimes().clear();
 
-            // Prepni na build mód
+            // Switch to build HUD
             switchHUD("build");
         }
     }
-
 }
