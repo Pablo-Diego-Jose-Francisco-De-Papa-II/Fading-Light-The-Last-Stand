@@ -11,16 +11,8 @@ import java.util.List;
 
 public class SniperTower extends Building {
 
-    private static BufferedImage sniperTowerImage;
-
-    static {
-        try {
-            sniperTowerImage = ImageIO.read(new File("resources/buildings/sniper.png"));
-        } catch (IOException e) {
-            System.err.println("Failed to load sniper tower image.");
-            sniperTowerImage = null;
-        }
-    }
+    private BufferedImage sniperTowerImage;
+    private int level;
 
     public SniperTower(PlayingArea map, int x, int y) {
         super("Sniper Tower", map, x, y,
@@ -31,7 +23,20 @@ public class SniperTower extends Building {
                 20,
                 80,
                 1,
-                sniperTowerImage);
+                null
+        );
+        this.level = 1;
+        this.loadImage();
+        setImage(this.sniperTowerImage);
+    }
+
+    private void loadImage() {
+        try {
+            this.sniperTowerImage = ImageIO.read(new File("resources/sni" + this.level + ".png"));
+        } catch (IOException e) {
+            System.err.println("Failed to load watchtower image for level " + this.level);
+            this.sniperTowerImage = null;
+        }
     }
 
     @Override
@@ -40,7 +45,7 @@ public class SniperTower extends Building {
             return;
         }
 
-        if (!canAttack()) {
+        if (canAttack()) {
             return;
         }
 
@@ -85,6 +90,10 @@ public class SniperTower extends Building {
         }
 
         setLevel(getLevel() + 1);
+        this.level = getLevel();
+
+        this.loadImage();
+        setImage(this.sniperTowerImage);
 
         System.out.println(getName() + " upgraded to level " + getLevel());
         return true;

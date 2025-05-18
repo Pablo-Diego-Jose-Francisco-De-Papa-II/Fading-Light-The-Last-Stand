@@ -8,7 +8,7 @@ public class EventManager {
     private List<Event> activeEvents = new ArrayList<>();
 
     public void checkAndStartEvent(int day) {
-        activeEvents.clear();
+        this.activeEvents.clear();
 
         if (day % 10 == 0) {
             System.out.println("scrap+");
@@ -17,36 +17,36 @@ public class EventManager {
         if (day % 7 == 0) {
             Event bloodMoon = new BloodMoon();
             bloodMoon.startEvent();
-            activeEvents.add(bloodMoon);
+            this.activeEvents.add(bloodMoon);
         }
 
         if (day % 5 == 0) {
             Event rain = new Rain();
             rain.startEvent();
-            activeEvents.add(rain);
+            this.activeEvents.add(rain);
         }
 
         if (day % 3 != 0) {
             Event fog = new Fog();
             fog.startEvent();
-            activeEvents.add(fog);
+            this.activeEvents.add(fog);
         }
 
     }
 
     public void endCurrentEvents() {
-        for (Event event : activeEvents) {
+        for (Event event : this.activeEvents) {
             if (event.isActive()) {
                 event.endEvent();
             }
         }
 
-        activeEvents.clear();
+        this.activeEvents.clear();
     }
 
     public List<String> getActiveEventNames() {
         List<String> names = new ArrayList<>();
-        for (Event event : activeEvents) {
+        for (Event event : this.activeEvents) {
             if (event.isActive()) {
                 names.add(event.getName());
             }

@@ -25,9 +25,9 @@ public class Barricade extends Building {
     public Barricade(PlayingArea map, int x, int y) {
         super("Barricade", map, x, y,
                 1,
-                5,
+                10,
                 1,
-                100,
+                200,
                 0,
                 0,
                 0,
@@ -41,11 +41,12 @@ public class Barricade extends Building {
 
     @Override
     public boolean upgrade() {
-       return false;
+        return false;
     }
 
     @Override
     public int getUpgradeCost() {
         return 0;
     }
+
 }

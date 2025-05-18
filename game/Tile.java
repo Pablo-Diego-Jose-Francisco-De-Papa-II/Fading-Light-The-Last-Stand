@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class Tile {
 
-    private static final Random random = new Random();
+    private static final Random RANDOM = new Random();
     private static final BufferedImage DEFAULT_IMAGE = loadImage();
 
     private final int x;
@@ -45,7 +45,7 @@ public class Tile {
     }
 
     private static BufferedImage getRandomSubImage() {
-        return Tile.DEFAULT_IMAGE.getSubimage(random.nextInt(41), random.nextInt(41), 10, 10);
+        return Tile.DEFAULT_IMAGE.getSubimage(RANDOM.nextInt(41), RANDOM.nextInt(41), 10, 10);
     }
 
     public int[] getPosition() {
@@ -82,10 +82,10 @@ public class Tile {
     }
 
     public void damageBuilding(int amount) {
-        if (building != null) {
-            building.takeDamage(amount);
-            if (building.getHealth() <= 0) {
-                removeBuilding();
+        if (this.building != null) {
+            this.building.takeDamage(amount);
+            if (this.building.getHealth() <= 0) {
+                this.removeBuilding();
             }
         }
     }

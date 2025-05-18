@@ -1,7 +1,17 @@
 import game.Game;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import javax.swing.BorderFactory;
+import javax.swing.JLayeredPane;
+
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Image;
 
 public class Menu {
     public void setUpGUI() {

@@ -1,18 +1,19 @@
 package ui;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
+import java.awt.Font;
 
 public abstract class AbstractHUD extends JPanel {
 
-    protected final JLabel dayLabel;
-    protected final JLabel scrapLabel;
+    private final JLabel dayLabel;
+    private final JLabel scrapLabel;
 
     public AbstractHUD() {
         setLayout(null);
         setBounds(0, 0, 1280, 720);
 
-        // Načítanie ikon bezpečným spôsobom
         ImageIcon dayIcon = null;
 
         try {
@@ -23,16 +24,16 @@ public abstract class AbstractHUD extends JPanel {
 
         // Vytvorenie labelu pre šrot
         this.scrapLabel = new JLabel("0 scraps");
-        this.scrapLabel.setBounds(1075, 10, 100, 50); // pozícia textu vedľa ikony
+        this.scrapLabel.setBounds(1050, 10, 200, 50);
         this.scrapLabel.setFont(new Font("Arial", Font.BOLD, 20));
         add(this.scrapLabel);
 
         JLabel scrapIconLabel = new JLabel(new ImageIcon("resources/scrap_bg.png"));
-        scrapIconLabel.setBounds(1020, 5, 250, 50);  // pozícia a veľkosť ikony
+        scrapIconLabel.setBounds(1020, 5, 250, 50);
         add(scrapIconLabel);
 
         // Vytvorenie labelu pre deň
-        this.dayLabel = new JLabel("69", dayIcon, JLabel.CENTER);
+        this.dayLabel = new JLabel("1", dayIcon, JLabel.CENTER);
         this.dayLabel.setBounds(1175, 65, 75, 75);
         this.dayLabel.setHorizontalTextPosition(JLabel.CENTER);
         this.dayLabel.setVerticalTextPosition(JLabel.CENTER);   // text v strede ikony

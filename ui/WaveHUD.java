@@ -2,8 +2,11 @@ package ui;
 
 import game.Game;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+
+import java.awt.Font;
 import java.awt.event.ActionListener;
 
 public class WaveHUD extends AbstractHUD {
@@ -23,14 +26,13 @@ public class WaveHUD extends AbstractHUD {
         this.enemiesLeftLabel.setFont(new Font("Arial", Font.BOLD, 20));
         add(this.enemiesLeftLabel);
 
-        JLabel enemiesLeftLabel = new JLabel(new ImageIcon("resources/slime_bg.png"));
-        enemiesLeftLabel.setBounds(10, -10, 250, 90);
-        add(enemiesLeftLabel);
+        JLabel enemiesLeftLabel1 = new JLabel(new ImageIcon("resources/slime_bg.png"));
+        enemiesLeftLabel1.setBounds(10, -10, 250, 90);
+        add(enemiesLeftLabel1);
 
         // Time label centered at top middle
         this.timeLabel = new JLabel("00:00");
         this.timeLabel.setFont(new Font("Arial", Font.BOLD, 30));
-        // center at top: x = (frameWidth/2 - labelWidth/2)
         this.timeLabel.setBounds(590, 10, 100, 50);
         add(this.timeLabel);
 

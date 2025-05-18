@@ -11,16 +11,8 @@ import java.util.List;
 
 public class Ballista extends Building {
 
-    private static BufferedImage ballistaImage;
-
-    static {
-        try {
-            ballistaImage = ImageIO.read(new File("resources/buildings/ballista.png"));
-        } catch (IOException e) {
-            System.err.println("Failed to load ballista image.");
-            ballistaImage = null;
-        }
-    }
+    private BufferedImage ballistaImage;
+    private int level;
 
     public Ballista(PlayingArea map, int x, int y) {
         super("Ballista", map, x, y,
@@ -28,16 +20,28 @@ public class Ballista extends Building {
                 150,
                 3,
                 100,
-                20,
+                50,
                 20,
                 0.25f,
-                ballistaImage
+                null
         );
+        this.level = 1;
+        this.loadImage();
+        setImage(this.ballistaImage);
+    }
+
+    private void loadImage() {
+        try {
+            this.ballistaImage = ImageIO.read(new File("resources/ba" + this.level + ".png"));
+        } catch (IOException e) {
+            System.err.println("Failed to load watchtower image for level " + this.level);
+            this.ballistaImage = null;
+        }
     }
 
     @Override
     public void attack(List<Slime> slimes) {
-        if (isDestroyed() || !canAttack()) {
+        if (isDestroyed() || canAttack()) {
             return;
         }
 
@@ -80,6 +84,10 @@ public class Ballista extends Building {
         }
 
         setLevel(getLevel() + 1);
+        this.level = getLevel();
+
+        this.loadImage();
+        setImage(this.ballistaImage);
 
         System.out.println(getName() + " upgraded to level " + getLevel());
         return true;

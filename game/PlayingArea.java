@@ -15,15 +15,15 @@ public class PlayingArea {
     private final TownHall townHall;
 
     public PlayingArea() {
-        buildingManager = new BuildingManager();
-        initializeTiles();
+        this.buildingManager = new BuildingManager();
+        this.initializeTiles();
 
         // Place the Town Hall in the center
         int centerX = (COLS - 10) / 2;
         int centerY = (ROWS - 10) / 2;
-        townHall = new TownHall(this, centerX, centerY);
-        buildingManager.addBuilding(townHall);
-        boolean placed = placeBuilding(townHall);
+        this.townHall = new TownHall(this, centerX, centerY);
+        this.buildingManager.addBuilding(this.townHall);
+        boolean placed = this.placeBuilding(this.townHall);
 
         if (!placed) {
             System.err.println("Failed to place Town Hall in the center of the map.");
@@ -34,20 +34,17 @@ public class PlayingArea {
     private void initializeTiles() {
         for (int y = 0; y < ROWS; y++) {
             for (int x = 0; x < COLS; x++) {
-                playingArea[y][x] = new Tile(x, y);
+                this.playingArea[y][x] = new Tile(x, y);
             }
         }
     }
 
     // Get tile at position (x, y) or null if invalid
     public Tile getTile(int x, int y) {
-        if (!isValidCoordinate(x, y)) return null;
-        return playingArea[y][x];
-    }
-
-    // Return all tiles array
-    public Tile[][] getAllTiles() {
-        return playingArea;
+        if (!this.isValidCoordinate(x, y)) {
+            return null;
+        }
+        return this.playingArea[y][x];
     }
 
     public boolean placeBuilding(Building building) {
@@ -60,7 +57,7 @@ public class PlayingArea {
             for (int dx = 0; dx < size; dx++) {
                 int tileX = x + dx;
                 int tileY = y + dy;
-                if (!isValidCoordinate(tileX, tileY) || !playingArea[tileY][tileX].isWalkable()) {
+                if (!this.isValidCoordinate(tileX, tileY) || !this.playingArea[tileY][tileX].isWalkable()) {
                     System.out.println("Cannot place building: space is occupied or invalid.");
                     return false;
                 }
@@ -70,13 +67,13 @@ public class PlayingArea {
         // Položenie budovy
         for (int dy = 0; dy < size; dy++) {
             for (int dx = 0; dx < size; dx++) {
-                playingArea[y + dy][x + dx].setBuilding(building);
+                this.playingArea[y + dy][x + dx].setBuilding(building);
             }
         }
 
         // 💡 Pridanie budovy do buildingManagera, ak tam ešte nie je
-        if (!buildingManager.getBuildings().contains(building)) {
-            buildingManager.addBuilding(building);
+        if (!this.buildingManager.getBuildings().contains(building)) {
+            this.buildingManager.addBuilding(building);
         }
 
         System.out.println("Building placed at " + x + "," + y);
@@ -90,37 +87,37 @@ public class PlayingArea {
 
     // Save the current playing area as the original village state
     public void saveVillage() {
-        originalVillage = deepCopyTiles(playingArea);
+        this.originalVillage = this.deepCopyTiles(this.playingArea);
     }
 
     // Reset playing area to the original saved village state
     public void resetToVillage() {
-        if (originalVillage != null) {
-            playingArea = deepCopyTiles(originalVillage);
+        if (this.originalVillage != null) {
+            this.playingArea = this.deepCopyTiles(this.originalVillage);
         }
     }
 
     // Restore village state fully after wave failure
     public void restoreVillageState() {
-        resetToVillage();
+        this.resetToVillage();
 
         // Clear and rebuild building list from restored tiles
-        buildingManager.getBuildings().clear();
+        this.buildingManager.getBuildings().clear();
 
-        for (int y = 0; y < playingArea.length; y++) {
-            for (int x = 0; x < playingArea[0].length; x++) {
-                Tile tile = playingArea[y][x];
+        for (int y = 0; y < this.playingArea.length; y++) {
+            for (int x = 0; x < this.playingArea[0].length; x++) {
+                Tile tile = this.playingArea[y][x];
                 if (tile.hasBuilding()) {
                     Building b = tile.getBuilding();
-                    if (!buildingManager.getBuildings().contains(b)) {
-                        buildingManager.addBuilding(b);
+                    if (!this.buildingManager.getBuildings().contains(b)) {
+                        this.buildingManager.addBuilding(b);
                     }
                 }
             }
         }
 
         // Clear all slimes, since wave failed
-        buildingManager.getSlimes().clear();
+        this.buildingManager.getSlimes().clear();
 
         System.out.println("Village state restored after wave failure.");
     }
@@ -136,61 +133,12 @@ public class PlayingArea {
         return copy;
     }
 
-    public boolean isWithinBounds(int tileX, int tileY) {
-        return isValidCoordinate(tileX, tileY);
-    }
-
     public BuildingManager getBuildingManager() {
-        return buildingManager;
-    }
-
-    // Vylepšenie budovy na daných súradniciach
-    public boolean upgradeBuilding(int x, int y) {
-        Tile tile = getTile(x, y);
-        if (tile != null && tile.hasBuilding()) {
-            Building building = tile.getBuilding();
-            int upgradeCost = building.getUpgradeCost();
-            if (GameState.spendScrap(upgradeCost)) {
-                building.upgrade();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Odstránenie budovy na daných súradniciach
-    public boolean removeBuilding(int x, int y) {
-        Tile tile = getTile(x, y);
-        if (tile == null || !tile.hasBuilding()) return false;
-
-        Building building = tile.getBuilding();
-        int startX = building.getX();
-        int startY = building.getY();
-        int size = building.getSize();
-
-        for (int dy = 0; dy < size; dy++) {
-            for (int dx = 0; dx < size; dx++) {
-                Tile t = getTile(startX + dx, startY + dy);
-                if (t != null && t.getBuilding() == building) {
-                    t.removeBuilding();
-                }
-            }
-        }
-
-        System.out.println("Removed building at: " + startX + "," + startY);
-        return true;
+        return this.buildingManager;
     }
 
     public Building getBuildingAt(int x, int y) {
-        return getTile(x, y).getBuilding();
-    }
-
-    public boolean deleteBuilding(int x, int y) {
-        Building b = getBuildingAt(x, y);
-        if (b == null) return false;
-
-        getTile(x, y).removeBuilding();
-        return true;
+        return this.getTile(x, y).getBuilding();
     }
 
     // Find nearest building to given coords
@@ -198,9 +146,9 @@ public class PlayingArea {
         int minDistance = Integer.MAX_VALUE;
         int[] nearest = null;
 
-        for (int y = 0; y < playingArea.length; y++) {
-            for (int x = 0; x < playingArea[0].length; x++) {
-                Tile tile = playingArea[y][x];
+        for (int y = 0; y < this.playingArea.length; y++) {
+            for (int x = 0; x < this.playingArea[0].length; x++) {
+                Tile tile = this.playingArea[y][x];
                 if (tile.hasBuilding()) {
                     int distance = Math.abs(fromX - x) + Math.abs(fromY - y);
                     if (distance < minDistance) {

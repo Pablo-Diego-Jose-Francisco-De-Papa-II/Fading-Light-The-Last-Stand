@@ -4,7 +4,11 @@ import buildings.Building;
 import game.PlayingArea;
 import game.Tile;
 
-import java.awt.*;
+import javax.imageio.ImageIO;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public abstract class Slime {
 
@@ -13,13 +17,15 @@ public abstract class Slime {
     private int speed;
     private int attackDamage;
     private int attackRange;
-    private int attackSpeed;  // interval útoku v tickoch
-    private int attackCooldown = 0; // odpočítavanie do ďalšieho útoku
+    private int attackSpeed;
+    private int attackCooldown = 0;
     private String icon;
 
     private PlayingArea map;
     private int x;
     private int y;
+
+    private BufferedImage image;
 
     public Slime(PlayingArea map, int startX, int startY, int health, int size, int speed,
                  int attackDamage, int attackRange, int attackSpeed, String icon) {
@@ -33,6 +39,13 @@ public abstract class Slime {
         this.attackRange = attackRange;
         this.attackSpeed = attackSpeed;
         this.icon = icon;
+
+        try {
+            this.image = ImageIO.read(new File(icon));
+        } catch (IOException e) {
+            e.printStackTrace();
+            this.image = null;
+        }
     }
 
     public void update() {
@@ -51,12 +64,11 @@ public abstract class Slime {
         int distance = Math.abs(this.x - targetX) + Math.abs(this.y - targetY);
 
         if (distance <= this.attackRange) {
-            this.dealDamage(targetX, targetY);  // Tu posielame pozíciu budovy, aby sme na ňu útočili
+            this.dealDamage(targetX, targetY);
         } else {
             this.moveTowards(targetX, targetY);
         }
     }
-
 
     public void moveTowards(int targetX, int targetY) {
         int dx = Integer.compare(targetX, this.x);
@@ -93,27 +105,20 @@ public abstract class Slime {
         }
     }
 
-
-
-    public void die() {
-        System.out.println("Slime at " + this.x + "," + this.y + " died.");
-        // Tu by si mal informovať správcu slimákov, že zomrel (napr. odstrániť z listu)
-    }
-
     public void takeDamage(int amount) {
         this.health -= amount;
-        if (this.health <= 0) {
-            this.die();
-        }
     }
 
     public void draw(Graphics g, int tileSize) {
-        Image image = Toolkit.getDefaultToolkit().getImage(this.icon);
-        int pixelX = this.x * tileSize;
-        int pixelY = this.y * tileSize;
-        g.drawImage(image, pixelX, pixelY, tileSize, tileSize, null);
+        if (this.image != null) {
+            int pixelX = this.x * tileSize;
+            int pixelY = this.y * tileSize;
+            g.drawImage(this.image, pixelX, pixelY, tileSize, tileSize, null);
+        } else {
+            g.setColor(java.awt.Color.RED);
+            g.fillRect(this.x * tileSize, this.y * tileSize, tileSize, tileSize);
+        }
     }
-
 
     public int getX() {
         return this.x;
@@ -129,10 +134,6 @@ public abstract class Slime {
 
     public boolean isDead() {
         return this.health <= 0;
-    }
-
-    public String getIcon() {
-        return this.icon;
     }
 
 }

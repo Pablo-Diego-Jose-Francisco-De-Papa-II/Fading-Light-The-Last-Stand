@@ -21,7 +21,7 @@ public abstract class Building {
 
     private int damage;
     private int range;
-    private float attackSpeed; // attacks per second
+    private float attackSpeed;
     private long lastAttackTime;
 
     private boolean destroyed;
@@ -62,7 +62,6 @@ public abstract class Building {
         this.health -= amount;
         if (this.health <= 0) {
             this.destroyed = true;
-            // Free tiles when destroyed
             for (int i = 0; i < this.size; i++) {
                 for (int j = 0; j < this.size; j++) {
                     this.map.getTile(this.x + i, this.y + j).removeBuilding();
@@ -79,13 +78,14 @@ public abstract class Building {
 
     public abstract int getUpgradeCost();
 
-    protected boolean canAttack() {
+    public boolean canAttack() {
         long currentTime = System.currentTimeMillis();
+
         if (currentTime - this.lastAttackTime >= (1000 / this.attackSpeed)) {
             this.lastAttackTime = currentTime;
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public void updateCooldown() {
@@ -126,14 +126,6 @@ public abstract class Building {
 
     public int getRange() {
         return this.range;
-    }
-
-    public float getAttackSpeed() {
-        return this.attackSpeed;
-    }
-
-    public int getCost() {
-        return this.cost;
     }
 
     public BufferedImage getImage() {

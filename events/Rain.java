@@ -7,7 +7,7 @@ public class Rain implements Event {
     @Override
     public void startEvent() {
         this.active = true;
-        applyEffect();
+        this.applyEffect();
     }
 
     @Override

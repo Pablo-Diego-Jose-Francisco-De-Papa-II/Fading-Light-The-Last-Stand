@@ -20,21 +20,21 @@ public class WatchTower extends Building {
                 100,
                 3,
                 100,
-                1000,
-                4000,
+                10,
+                40,
                 1f,
-                null  // dočasne null, nastavíme nižšie
+                null
         );
         this.level = 1;
-        loadImage();
-        setImage(this.image);  // predpokladám, že máš setter na zmenu obrázku
+        this.loadImage();
+        setImage(this.image);
     }
 
     private void loadImage() {
         try {
-            this.image = ImageIO.read(new File("resources/wt" + level + ".png"));
+            this.image = ImageIO.read(new File("resources/wt" + this.level + ".png"));
         } catch (IOException e) {
-            System.err.println("Failed to load watchtower image for level " + level);
+            System.err.println("Failed to load watchtower image for level " + this.level);
             this.image = null;
         }
     }
@@ -45,17 +45,15 @@ public class WatchTower extends Building {
             return;
         }
 
-        if (!canAttack()) {
+        if (canAttack()) {
             return;
         }
 
         for (Slime slime : slimes) {
             if (!slime.isDead()) {
-                boolean inRange = isInRange(slime);
-                System.out.println(getName() + " checking slime at (" + slime.getX() + "," + slime.getY() + "), inRange: " + inRange);
+                boolean inRange = this.isInRange(slime);
                 if (inRange) {
                     slime.takeDamage(getDamage());
-                    System.out.println(getName() + " shot slime for " + getDamage() + " damage. Slime HP: " + slime.getHealth());
                     updateCooldown();
                     break;
                 }
@@ -95,10 +93,10 @@ public class WatchTower extends Building {
             }
         }
 
-        setLevel(getLevel() + 1);
+        this.setLevel(getLevel() + 1);
         this.level = getLevel();
 
-        loadImage();
+        this.loadImage();
         setImage(this.image);
 
         System.out.println(getName() + " upgraded to level " + getLevel());

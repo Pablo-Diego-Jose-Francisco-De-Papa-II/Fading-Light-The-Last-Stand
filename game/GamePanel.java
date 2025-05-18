@@ -3,8 +3,12 @@ package game;
 import buildings.Building;
 import slimes.Slime;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -33,7 +37,9 @@ public class GamePanel extends JPanel {
                 }
 
                 Tile tile = playingArea.getTile(tileX, tileY);
-                if (tile == null) return;
+                if (tile == null) {
+                    return;
+                }
 
                 Building clickedBuilding = tile.getBuilding();
                 if (clickedBuilding != null) {
@@ -46,7 +52,9 @@ public class GamePanel extends JPanel {
                 }
 
                 Shop shop = game.getBuildHUD().getShop();
-                if (shop == null) return;
+                if (shop == null) {
+                    return;
+                }
 
                 String selected = shop.getSelectedBuilding();
 
@@ -77,9 +85,9 @@ public class GamePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        drawGrid(g);
-        drawBuildings(g);
-        drawZombies(g);
+        this.drawGrid(g);
+        this.drawBuildings(g);
+        this.drawZombies(g);
     }
 
     private void drawGrid(Graphics g) {
@@ -97,8 +105,10 @@ public class GamePanel extends JPanel {
 
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
-                Tile tile = playingArea.getTile(x, y);
-                if (tile == null) continue;
+                Tile tile = this.playingArea.getTile(x, y);
+                if (tile == null) {
+                    continue;
+                }
 
                 Building building = tile.getBuilding();
                 if (building != null && !drawn.contains(building)) {
@@ -121,8 +131,8 @@ public class GamePanel extends JPanel {
     }
 
     private void drawZombies(Graphics g) {
-        java.util.List<Slime> zombies = game.getWaveManager().getSlimes();
-        playingArea.printTownHallHP();
+        java.util.List<Slime> zombies = this.game.getWaveManager().getSlimes();
+        this.playingArea.printTownHallHP();
 
         for (Slime slime : zombies) {
             slime.draw(g, TILE_SIZE);

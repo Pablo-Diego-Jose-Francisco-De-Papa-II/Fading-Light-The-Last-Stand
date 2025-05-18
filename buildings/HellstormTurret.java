@@ -11,16 +11,8 @@ import java.util.List;
 
 public class HellstormTurret extends Building {
 
-    private static BufferedImage hellstormImage;
-
-    static {
-        try {
-            hellstormImage = ImageIO.read(new File("resources/buildings/hellstorm.png"));
-        } catch (IOException e) {
-            System.err.println("Failed to load hellstorm turret image.");
-            hellstormImage = null;
-        }
-    }
+    private BufferedImage hellstormImage;
+    private int level;
 
     public HellstormTurret(PlayingArea map, int x, int y) {
         super("Hellstorm Turret", map, x, y,
@@ -31,7 +23,20 @@ public class HellstormTurret extends Building {
                 15,
                 20,
                 3.0f,
-                hellstormImage);
+                null
+        );
+        this.level = 1;
+        this.loadImage();
+        setImage(this.hellstormImage);
+    }
+
+    private void loadImage() {
+        try {
+            this.hellstormImage = ImageIO.read(new File("resources/hel" + this.level + ".png"));
+        } catch (IOException e) {
+            System.err.println("Failed to load watchtower image for level " + this.level);
+            this.hellstormImage = null;
+        }
     }
 
     @Override
@@ -40,7 +45,7 @@ public class HellstormTurret extends Building {
             return;
         }
 
-        if (!this.canAttack()) {
+        if (this.canAttack()) {
             return;
         }
 
@@ -78,6 +83,10 @@ public class HellstormTurret extends Building {
         }
 
         setLevel(getLevel() + 1);
+        this.level = getLevel();
+
+        this.loadImage();
+        setImage(this.hellstormImage);
 
         System.out.println(getName() + " upgraded to level " + getLevel());
         return true;

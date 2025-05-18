@@ -1,8 +1,18 @@
 package game;
 
-import slimes.*;
+import slimes.Slime;
+import slimes.Goob;
+import slimes.Goobster;
+import slimes.Goobmass;
+import slimes.Goober;
+import slimes.FastGoob;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.ArrayList;
+
 
 public class WaveManager {
     private final PlayingArea playingArea;
@@ -14,7 +24,7 @@ public class WaveManager {
 
     private int day = 1;
     private double wavePoints = 100;
-    private final double SCALING_FACTOR = 1.4;
+    private static final double SCALING_FACTOR = 1.4;
 
     private double currentWavePoints; // stores wave points at the start of the current wave
 
@@ -26,6 +36,8 @@ public class WaveManager {
 
     private double remainingWavePoints;
 
+    private final BuildingManager buildingManager;
+
     public WaveManager(PlayingArea playingArea) {
         this.playingArea = playingArea;
         this.slimes = new ArrayList<>();
@@ -36,6 +48,8 @@ public class WaveManager {
         this.slimeTypes.put("Goobster", new int[]{45, 3});
         this.slimeTypes.put("Goobmassa", new int[]{60, 4});
         this.slimeTypes.put("Goober", new int[]{90, 5});
+
+        this.buildingManager = playingArea.getBuildingManager();
 
         this.remainingWavePoints = 0;
     }
@@ -86,7 +100,11 @@ public class WaveManager {
             Slime slime = this.spawnSlimeByType(slimeType);
             if (slime != null) {
                 this.slimes.add(slime);
-                System.out.println("Spawned " + slimeType);
+
+                // ✅ Dôležité: pridaj slima aj do buildingManagera, aby veže mohli útočiť
+                this.buildingManager.addSlime(slime);
+
+                System.out.println("Spawned " + slimeType + " at (" + slime.getX() + ", " + slime.getY() + ") with " + slime.getHealth() + " HP");
             }
             this.nextSlimeIndex++;
             this.nextSpawnTime = currentTime + this.random.nextInt(1001);
@@ -94,9 +112,13 @@ public class WaveManager {
 
         for (Slime slime : this.slimes) {
             slime.update();
+            System.out.println("Slime at (" + slime.getX() + ", " + slime.getY() + ") has " + slime.getHealth() + " HP");
         }
+
         this.slimes.removeIf(Slime::isDead);
     }
+
+
 
     private List<String> getAvailableSlimeTypes() {
         List<String> list = new ArrayList<>();
