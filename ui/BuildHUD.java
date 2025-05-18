@@ -34,6 +34,13 @@ public class BuildHUD extends AbstractHUD {
         this.startWaveButton.setFont(new Font("Arial", Font.BOLD, 27));
         add(this.startWaveButton);
 
+        // ✅ Tu pridáme action listener na spustenie vlny
+        this.startWaveButton.addActionListener(e -> {
+            game.startFirstWave(); // ✅ zavolá metódu v triede Game
+            game.switchHUD("wave"); // prepne z build módu na wave mód
+        });
+
+
         // Shop panel (hidden initially)
         this.shop = new Shop(playingArea, 50000);
         this.shop.setVisible(false);

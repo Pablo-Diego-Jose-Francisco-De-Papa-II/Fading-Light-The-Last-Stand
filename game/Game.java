@@ -14,6 +14,7 @@ public class Game {
     private final PlayingArea playingArea;
     private final GamePanel gamePanel;
     private final BuildingManager buildingManager;
+    private final WaveManager waveManager; // ✅ PRIDANÉ
 
     private JFrame frame;
     private JLayeredPane layeredPane;
@@ -30,7 +31,8 @@ public class Game {
 
         this.playingArea = new PlayingArea();
         this.buildingManager = playingArea.getBuildingManager();
-        this.buildHUD = new BuildHUD(this.playingArea, this);
+        this.waveManager = new WaveManager(playingArea); // ✅ PRIDANÉ
+        this.buildHUD = new BuildHUD(this.playingArea, this); // ✅ buildHUD teraz dostane aj this
         this.waveHUD = new WaveHUD(this);
         this.gamePanel = new GamePanel(this.playingArea, this);
 
@@ -74,6 +76,10 @@ public class Game {
         return buildingManager;
     }
 
+    public WaveManager getWaveManager() { // ✅ GETTER
+        return waveManager;
+    }
+
     private void startGameLoop() {
         Timer timer = new Timer(16, e -> updateGame());
         timer.start();
@@ -81,9 +87,11 @@ public class Game {
 
     private void updateGame() {
         buildingManager.update();
+        waveManager.update();     // ✅ Toto je kľúčové – aby sa slizáky hýbali
         buildingManager.cleanup();
         gamePanel.repaint();
     }
+
 
     public BuildHUD getBuildHUD() {
         return buildHUD;
@@ -92,4 +100,9 @@ public class Game {
     public WaveHUD getWaveHUD() {
         return waveHUD;
     }
+
+    public void startFirstWave() {
+        waveManager.startFirstWave(); // ✅ OPRAVA
+    }
+
 }

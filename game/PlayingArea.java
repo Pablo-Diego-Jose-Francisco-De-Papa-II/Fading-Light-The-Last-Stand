@@ -18,8 +18,8 @@ public class PlayingArea {
         initializeTiles();
 
         // Place the Town Hall in the center
-        int centerX = (COLS - 10) / 2 - 5;
-        int centerY = (ROWS - 10) / 2 - 5;
+        int centerX = (COLS - 10) / 2;
+        int centerY = (ROWS - 10) / 2;
         TownHall townHall = new TownHall(this, centerX, centerY);
         boolean placed = placeBuilding(townHall);
 
@@ -78,7 +78,7 @@ public class PlayingArea {
     }
 
     // Check if coordinates are inside the map boundaries
-    private boolean isValidCoordinate(int x, int y) {
+    public boolean isValidCoordinate(int x, int y) {
         return x >= 0 && y >= 0 && x < COLS && y < ROWS;
     }
 
@@ -161,5 +161,43 @@ public class PlayingArea {
         getTile(x, y).removeBuilding();
         return true;
     }
+
+    // V triede PlayingArea
+    public int[] findNearestBuilding(int fromX, int fromY) {
+        int minDistance = Integer.MAX_VALUE;
+        int[] nearest = null;
+
+        for (int y = 0; y < playingArea.length; y++) {
+            for (int x = 0; x < playingArea[0].length; x++) {
+                Tile tile = playingArea[y][x];
+                if (tile.hasBuilding()) {
+                    int distance = Math.abs(fromX - x) + Math.abs(fromY - y);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        nearest = new int[]{x, y};
+                    }
+                }
+            }
+        }
+
+        return nearest;
+    }
+
+    public void printTownHallHP() {
+        for (int y = 0; y < ROWS; y++) {
+            for (int x = 0; x < COLS; x++) {
+                Tile tile = playingArea[y][x];
+                if (tile.hasBuilding()) {
+                    Building b = tile.getBuilding();
+                    if ("Town Hall".equals(b.getName())) {
+                        System.out.println("Town Hall HP: " + b.getHealth());
+                        return; // Ak chceš vypísať len prvý nájdený Town Hall
+                    }
+                }
+            }
+        }
+        System.out.println("Town Hall nebola nájdená.");
+    }
+
 
 }

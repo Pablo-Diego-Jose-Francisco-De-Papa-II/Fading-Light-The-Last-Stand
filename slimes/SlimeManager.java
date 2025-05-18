@@ -18,8 +18,8 @@ public class SlimeManager {
     public void updateZombies() {
         for (int i = 0; i < this.slimes.size(); i++) {
             Slime z = this.slimes.get(i);
-            z.move();
-            z.dealDamage();
+            z.update(); // ← teraz pohyb + útok v jednom
+
             if (z.getHealth() <= 0) {
                 z.die();
                 this.slimes.remove(i);
@@ -27,6 +27,7 @@ public class SlimeManager {
             }
         }
     }
+
 
     public ArrayList<Slime> getZombies() {
         return this.slimes;

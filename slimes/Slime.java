@@ -1,11 +1,10 @@
 package slimes;
 
+import buildings.Building;
 import game.PlayingArea;
 import game.Tile;
 
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.*;
 
 public abstract class Slime {
 
@@ -14,14 +13,16 @@ public abstract class Slime {
     private int speed;
     private int attackDamage;
     private int attackRange;
-    private int attackSpeed;
+    private int attackSpeed;  // interval útoku v tickoch
+    private int attackCooldown = 0; // odpočítavanie do ďalšieho útoku
     private String icon;
 
-    protected PlayingArea map;
-    protected int x;
-    protected int y;
+    private PlayingArea map;
+    private int x;
+    private int y;
 
-    public Slime(PlayingArea map, int startX, int startY, int health, int size, int speed, int attackDamage, int attackRange, int attackSpeed, String icon) {
+    public Slime(PlayingArea map, int startX, int startY, int health, int size, int speed,
+                 int attackDamage, int attackRange, int attackSpeed, String icon) {
         this.map = map;
         this.x = startX;
         this.y = startY;
@@ -34,35 +35,65 @@ public abstract class Slime {
         this.icon = icon;
     }
 
-    public void move() {
-        // Pokús sa ísť doľava, ale najskôr over súradnice a walkability
-        int nextX = this.x - 1;
-        int nextY = this.y;
-
-        if (nextX >= 0) { // overenie, či súradnica nie je záporná
-            Tile nextTile = this.map.getTile(nextX, nextY);
-            if (nextTile != null && nextTile.isWalkable()) {
-                this.x = nextX;
-            }
-            // else: nemožno sa pohybovať, zostávaj na mieste
-        }
-    }
-
     public void update() {
-        move();
-        dealDamage();
-    }
+        if (attackCooldown > 0) {
+            attackCooldown--;
+        }
 
-    public void dealDamage() {
-        Tile tile = this.map.getTile(this.x, this.y);
-        if (tile != null && tile.getBuilding() != null) {
-            tile.getBuilding().takeDamage(this.attackDamage);
+        int[] target = map.findNearestBuilding(x, y);
+        if (target == null) return;
+
+        int targetX = target[0];
+        int targetY = target[1];
+
+        int distance = Math.abs(x - targetX) + Math.abs(y - targetY);
+
+        if (distance <= attackRange) {
+            dealDamage(targetX, targetY);  // Tu posielame pozíciu budovy, aby sme na ňu útočili
+        } else {
+            moveTowards(targetX, targetY);
         }
     }
+
+
+    public void moveTowards(int targetX, int targetY) {
+        int dx = Integer.compare(targetX, x);
+        int dy = Integer.compare(targetY, y);
+
+        int newX = x + dx;
+        int newY = y + dy;
+
+        if (map.isValidCoordinate(newX, newY)) {
+            Tile nextTile = map.getTile(newX, newY);
+            if (nextTile != null && nextTile.isWalkable()) {
+                this.x = newX;
+                this.y = newY;
+            }
+        }
+    }
+
+    public void dealDamage(int targetX, int targetY) {
+        if (attackCooldown > 0) return;
+
+        Tile tile = this.map.getTile(targetX, targetY);
+        if (tile != null) {
+            Building building = tile.getBuilding();
+            if (building != null) {
+                building.takeDamage(this.attackDamage);
+                attackCooldown = attackSpeed;
+
+                if (building.isDestroyed()) {
+                    tile.removeBuilding();
+                }
+            }
+        }
+    }
+
+
 
     public void die() {
         System.out.println("Slime at " + x + "," + y + " died.");
-        // Odstránenie slima z manažéra alebo mapy by malo byť riešené mimo tejto triedy
+        // Tu by si mal informovať správcu slimákov, že zomrel (napr. odstrániť z listu)
     }
 
     public void takeDamage(int amount) {
@@ -72,28 +103,18 @@ public abstract class Slime {
         }
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics g, int tileSize) {
         Image image = Toolkit.getDefaultToolkit().getImage(this.icon);
-        g.drawImage(image, x, y, size, size, null);
+        int pixelX = x * tileSize;
+        int pixelY = y * tileSize;
+        g.drawImage(image, pixelX, pixelY, tileSize, tileSize, null);
     }
 
-    public int getX() {
-        return x;
-    }
 
-    public int getY() {
-        return y;
-    }
+    public int getX() { return x; }
+    public int getY() { return y; }
+    public int getHealth() { return health; }
+    public boolean isDead() { return health <= 0; }
 
-    public int getHealth() {
-        return health;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public boolean isDead() {
-        return health <= 0;
-    }
+    public String getIcon() { return icon; }
 }

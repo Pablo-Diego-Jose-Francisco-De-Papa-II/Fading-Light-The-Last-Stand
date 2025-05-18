@@ -21,33 +21,31 @@ public class WaveManager {
     public void spawnZombie() {
         int x = 0, y = 0;
 
-        // Vyber náhodný okraj: 0 = left, 1 = right, 2 = top, 3 = bottom
         int edge = random.nextInt(4);
 
         switch (edge) {
-            case 0: // left
-                x = 0;
-                y = random.nextInt(720);
-                break;
-            case 1: // right
-                x = 1280 - 1;
-                y = random.nextInt(720);
-                break;
-            case 2: // top
-                x = random.nextInt(1280);
-                y = 0;
-                break;
-            case 3: // bottom
-                x = random.nextInt(1280);
-                y = 720 - 1;
-                break;
+            case 0: x = 0; y = random.nextInt(128); break;         // left
+            case 1: x = 128 - 1; y = random.nextInt(72); break; // right
+            case 2: x = random.nextInt(128); y = 0; break;          // top
+            case 3: x = random.nextInt(128); y = 72 - 1; break; // bottom
         }
 
-        if (playingArea.getTile(x, y).isWalkable()) {
-            Slime z = new Goob(playingArea, x, y);  // môžeš zmeniť na iný typ
+        if (isValidTile(x, y)) {
+            Slime z = new Goob(playingArea, x, y); // môžeš použiť iný typ
             slimes.add(z);
             System.out.println("Spawned zombie at (" + x + ", " + y + ")");
+        } else {
+            System.err.println("❌ Invalid spawn position at (" + x + ", " + y + ")");
         }
+    }
+
+    private boolean isValidTile(int x, int y) {
+        if (x < 0 || y < 0 || x >= 128 || y >= 72) {
+            return false;
+        }
+
+        Tile tile = playingArea.getTile(x, y);
+        return tile != null && tile.isWalkable();
     }
 
     public List<Slime> getZombies() {
@@ -55,12 +53,23 @@ public class WaveManager {
     }
 
     public void startNextWave() {
-        // napr. spawni 5 zombíkov pre novú vlnu
         for (int i = 0; i < 5; i++) {
             spawnZombie();
         }
-
         System.out.println("Started new wave with 5 zombies.");
+    }
+
+    public void startFirstWave() {
+        spawnZombie();
+        System.out.println("Started first wave.");
+    }
+
+    public void update() {
+        for (Slime slime : slimes) {
+            slime.update();
+        }
+
+        slimes.removeIf(Slime::isDead);
     }
 
 }

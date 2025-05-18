@@ -47,4 +47,5 @@ public class TownHall extends Building {
     public int getUpgradeCost() {
         return 0;
     }
+
 }
